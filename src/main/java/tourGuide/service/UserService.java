@@ -14,5 +14,7 @@ public interface UserService {
 
 	Optional<User> addUser(User user);
 
+	Location getUserLocation(String userName);
+
 	Map<UUID, Location> getAllCurrentLocations();
 }

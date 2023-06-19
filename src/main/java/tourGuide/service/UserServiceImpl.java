@@ -1,6 +1,5 @@
 package tourGuide.service;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +38,7 @@ public class UserServiceImpl implements UserService {
 		return userRepository.addUser(user);
 	}
 
+	@Override
 	public Location getUserLocation(String userName) {
 
 		User user = this.getUserByUserName(userName).get();

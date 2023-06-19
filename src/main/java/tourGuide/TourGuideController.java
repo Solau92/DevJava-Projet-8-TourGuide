@@ -12,15 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import tourGuide.dto.NearByAttractionDto;
 import tourGuide.service.GpsServiceImpl;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.UserServiceImpl;
 
 @RestController
 public class TourGuideController {
-
-	//	@Autowired
-	//	TourGuideService tourGuideService;
 
 	private TourGuideService tourGuideService;
 
@@ -54,11 +52,11 @@ public class TourGuideController {
 	// The distance in miles between the user's location and each of the attractions.
 	// The reward points for visiting each Attraction.
 	//    Note: Attraction reward points can be gathered from RewardsCentral
-	//    @RequestMapping("/getNearbyAttractions")
-	//    public String getNearbyAttractions(@RequestParam String userName) {
-	//    	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-	//    	return JsonStream.serialize(tourGuideService.getNearByAttractions(visitedLocation));
-	//    }
+	@RequestMapping("/getNearbyAttractions")
+	public ResponseEntity<List<NearByAttractionDto>> getNearbyAttractions(@RequestParam String userName) {
+		// A mettre dans gpsService ? UserService ?? TourGuideService ??
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getNearbyAttractions(userName));
+	}
 
 	// Added to test
 	@RequestMapping("/getAllAttractions")
@@ -83,7 +81,8 @@ public class TourGuideController {
 	//    	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
 	//    	return JsonStream.serialize(providers);
 	//    }
-	//
+
+	// A priori plus utile
 	//    private User getUser(String userName) {
 	//    	return tourGuideService.getUser(userName);
 	//    }
