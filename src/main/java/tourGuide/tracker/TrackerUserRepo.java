@@ -1,33 +1,31 @@
 package tourGuide.tracker;
 
+import gpsUtil.location.VisitedLocation;
+import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import tourGuide.repository.UserRepository;
+import tourGuide.service.TourGuideService;
+import tourGuide.user.User;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.time.StopWatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import tourGuide.service.TourGuideService;
-import tourGuide.service.UserServiceImpl;
-import tourGuide.user.User;
-
-public class Tracker extends Thread {
-	private Logger logger = LoggerFactory.getLogger(Tracker.class);
+public class TrackerUserRepo extends Thread {
+	private Logger logger = LoggerFactory.getLogger(TrackerUserRepo.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private final UserRepository userRepo;
+
 	private TourGuideService tourGuideService;
-
-	@Autowired
-	private UserServiceImpl userServiceImpl;
-
 
 	private boolean stop = false;
 
-	public Tracker(TourGuideService tourGuideService) {
+	public TrackerUserRepo(UserRepository userRepo, TourGuideService tourGuideService) {
+		this.userRepo = userRepo;
 		this.tourGuideService = tourGuideService;
 		executorService.submit(this);
 	}
@@ -49,8 +47,9 @@ public class Tracker extends Thread {
 				logger.debug("Tracker stopping");
 				break;
 			}
+			
+			List<User> users = new ArrayList<>(userRepo.getAllUsers().values());
 
-			List<User> users = new ArrayList<>(userServiceImpl.getAllUsers().values());
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			stopWatch.start();
 			users.forEach(u -> tourGuideService.trackUserLocation(u));
@@ -66,4 +65,6 @@ public class Tracker extends Thread {
 		}
 		
 	}
+
+
 }
