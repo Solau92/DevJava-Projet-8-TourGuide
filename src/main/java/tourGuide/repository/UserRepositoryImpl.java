@@ -18,7 +18,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 	private Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
-	Map<String, User> userList;
+	Map<String, User> users;
 
 	public UserRepositoryImpl(){
 		this.initializeInternalUsers();
@@ -26,15 +26,15 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	public Map<String, User> getAllUsers(){
-		return userList;
+		return users;
 	}
 
 	@Override
 	public Optional<User> getUserByUserName(String userName) {
 
-		for(String s : userList.keySet()) {
+		for(String s : users.keySet()) {
 			if(s.equalsIgnoreCase(userName)){
-				return Optional.of(userList.get(s));
+				return Optional.of(users.get(s));
 			}
 		}
 		logger.error("User not found");
@@ -47,13 +47,13 @@ public class UserRepositoryImpl implements UserRepository {
 		if(isUserAlreadyRegistered(user)) {
 			return Optional.empty();
 		} else {
-			userList.put(user.getUserName(), user);
+			users.put(user.getUserName(), user);
 			return Optional.of(user);
 		}
 	}
 
 	private boolean isUserAlreadyRegistered(User user) {
-		for(String s : userList.keySet()) {
+		for(String s : users.keySet()) {
 			if(s.equalsIgnoreCase(user.getUserName())){
 				return true;
 			}
@@ -72,7 +72,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 		Map<UUID, Location> currentLocations = new HashMap<>();
 
-		for(User u : userList.values()) {
+		for(User u : users.values()) {
 			currentLocations.put(u.getUserId(), u.getLastVisitedLocation().location);
 
 		}
@@ -102,7 +102,7 @@ public class UserRepositoryImpl implements UserRepository {
 		});
 		logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal test users.");
 
-		this.userList = internalUserMap;
+		this.users = internalUserMap;
 	}
 
 	private void generateUserLocationHistory(User user) {

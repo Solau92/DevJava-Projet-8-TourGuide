@@ -13,14 +13,13 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
-	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
-	private final GpsUtil gpsUtil;
+	//	private final GpsUtil gpsUtil;
 	public TourGuideService tourGuideService;
+	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	private UserRepositoryImpl userRepository;
 
-	public UserServiceImpl(GpsUtil gpsUtil, UserRepositoryImpl userRepository) {
-		this.gpsUtil = gpsUtil;
+	public UserServiceImpl(/*GpsUtil gpsUtil,*/ UserRepositoryImpl userRepository) {
+		//		this.gpsUtil = gpsUtil;
 		this.userRepository = userRepository;
 		//		this.tracker = new Tracker();
 	}
@@ -47,6 +46,7 @@ public class UserServiceImpl implements UserService {
 		if (userRepository.getUserLocation(user) != null) {
 			return userRepository.getUserLocation(user);
 		} else {
+			// Voir si on fait autrement que d'utiliser tourGuideService ??
 			return tourGuideService.trackUserLocation(user).location;
 		}
 	}
