@@ -1,27 +1,18 @@
-//package tourGuide.service;
-//
-//import gpsUtil.GpsUtil;
-//import gpsUtil.location.VisitedLocation;
-//import org.springframework.stereotype.Service;
-//import tourGuide.tracker.Tracker;
-//import tourGuide.user.User;
-//
-//@Service
-//public class UserService {
-//
-//	private final GpsUtil gpsUtil;
-//
-////	public final Tracker tracker;
-//
-//	public UserService(GpsUtil gpsUtil) {
-//		this.gpsUtil = gpsUtil;
-////		this.tracker = new Tracker();
-//	}
-//
-//	public VisitedLocation getUserLocation(User user) {
-//		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
-//				user.getLastVisitedLocation() :
-//				trackUserLocation(user);
-//		return visitedLocation;
-//	}
-//}
+package tourGuide.service;
+
+import gpsUtil.location.Location;
+import tourGuide.user.User;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface UserService {
+	Map<String, User> getAllUsers();
+
+	Optional<User> getUserByUserName(String userName);
+
+	Optional<User> addUser(User user);
+
+	Map<UUID, Location> getAllCurrentLocations();
+}
