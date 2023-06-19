@@ -2,7 +2,10 @@ package tourGuide;
 
 import java.util.List;
 
+import gpsUtil.location.Location;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,25 +14,42 @@ import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
 import tourGuide.service.TourGuideService;
+import tourGuide.service.UserService;
 import tourGuide.user.User;
 import tripPricer.Provider;
 
 @RestController
 public class TourGuideController {
 
-	@Autowired
-	TourGuideService tourGuideService;
-	
+//	@Autowired
+//	TourGuideService tourGuideService;
+
+	private TourGuideService tourGuideService;
+
+	private UserService userService;
+
+	public TourGuideController(TourGuideService tourGuideService, UserService userService) {
+		this.userService = userService;
+		this.tourGuideService = tourGuideService;
+	}
+
+	///// Faire des ResponseEntity plutôt que JsonStream.serialize /////
+
     @RequestMapping("/")
     public String index() {
         return "Greetings from TourGuide!";
     }
     
-    @RequestMapping("/getLocation") 
+/*    @RequestMapping("/getLocation")
     public String getLocation(@RequestParam String userName) {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
-    }
+    }*/
+
+	@RequestMapping("/getLocation")
+	public ResponseEntity<VisitedLocation> getLocation(@RequestParam String userName) {
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getUserLocation(getUser(userName)));
+	}
     
     //  TODO: Change this method to no longer return a List of Attractions.
  	//  Instead: Get the closest five tourist attractions to the user - no matter how far away they are.
