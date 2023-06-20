@@ -1,15 +1,14 @@
-package tourGuide.repository;
+package tourGuide.repository.implementation;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import tourGuide.user.User;
+import tourGuide.repository.GpsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class GpsRepositoryImpl implements GpsRepository {

@@ -1,4 +1,4 @@
-package tourGuide.repository;
+package tourGuide.repository.implementation;
 
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
@@ -7,8 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.repository.UserRepository;
+import tourGuide.userModel.User;
+import tourGuide.userModel.UserReward;
 import tripPricer.Provider;
 
 import java.time.LocalDateTime;

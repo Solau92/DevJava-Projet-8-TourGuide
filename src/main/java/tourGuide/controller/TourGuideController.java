@@ -1,4 +1,4 @@
-package tourGuide;
+package tourGuide.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tourGuide.dto.NearByAttractionDto;
 import tourGuide.exception.UserNotFoundException;
-import tourGuide.service.GpsServiceImpl;
+import tourGuide.service.implementation.GpsServiceImpl;
 import tourGuide.service.TourGuideService;
-import tourGuide.service.UserServiceImpl;
-import tourGuide.user.UserReward;
+import tourGuide.service.implementation.UserServiceImpl;
+import tourGuide.userModel.UserReward;
 import tripPricer.Provider;
 
 @RestController

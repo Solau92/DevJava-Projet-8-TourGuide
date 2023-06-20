@@ -1,4 +1,4 @@
-package tourGuide.service;
+package tourGuide.service.implementation;
 
 import gpsUtil.location.Location;
 import org.slf4j.Logger;
@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
-import tourGuide.repository.UserRepositoryImpl;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.repository.implementation.UserRepositoryImpl;
+import tourGuide.service.TourGuideService;
+import tourGuide.service.UserService;
+import tourGuide.userModel.User;
+import tourGuide.userModel.UserReward;
 import tripPricer.Provider;
 
 import java.util.*;

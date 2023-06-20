@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import tourGuide.service.TourGuideService;
-import tourGuide.service.UserServiceImpl;
-import tourGuide.user.User;
+import tourGuide.service.implementation.UserServiceImpl;
+import tourGuide.userModel.User;
 
 public class Tracker extends Thread {
 	private Logger logger = LoggerFactory.getLogger(Tracker.class);

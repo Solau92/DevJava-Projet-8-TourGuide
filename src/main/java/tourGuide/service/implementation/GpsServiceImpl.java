@@ -1,4 +1,4 @@
-package tourGuide.service;
+package tourGuide.service.implementation;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import tourGuide.dto.NearByAttractionDto;
 import tourGuide.exception.UserNotFoundException;
-import tourGuide.repository.GpsRepositoryImpl;
+import tourGuide.repository.implementation.GpsRepositoryImpl;
+import tourGuide.service.GpsService;
+import tourGuide.service.UserService;
 
 import java.util.*;
 
