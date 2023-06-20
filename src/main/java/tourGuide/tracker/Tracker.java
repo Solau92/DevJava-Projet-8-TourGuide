@@ -24,7 +24,6 @@ public class Tracker extends Thread {
 	@Autowired
 	private UserServiceImpl userServiceImpl;
 
-
 	private boolean stop = false;
 
 	public Tracker(TourGuideService tourGuideService) {

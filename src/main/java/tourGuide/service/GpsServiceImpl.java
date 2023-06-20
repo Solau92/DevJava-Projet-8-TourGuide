@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import tourGuide.dto.NearByAttractionDto;
+import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.GpsRepositoryImpl;
 
 import java.util.*;
@@ -34,7 +35,7 @@ public class GpsServiceImpl implements GpsService {
 
 	// Voir si doit rester ici...
 	@Override
-	public List<NearByAttractionDto> getNearbyAttractions(String userName) {
+	public List<NearByAttractionDto> getNearbyAttractions(String userName) throws UserNotFoundException {
 
 		Location userLocation = userService.getUserLocation(userName);
 		double userLatitude = userLocation.latitude;
@@ -74,33 +75,6 @@ public class GpsServiceImpl implements GpsService {
 		}
 
 		return nearByAttractions;
-
-		//		Location userLocation = userService.getUserLocation(userName);
-		//		List<Attraction> attractions = gpsRepository.getAllAttractions();
-		//		// Faire un tableau ?
-		//		//		List<NearByAttractionDto> nearByAttractions = Arrays.asList(new NearByAttractionDto[5]);
-		//		List<NearByAttractionDto> nearByAttractions = new ArrayList<>();
-		//		double distanceLimiteMin = Double.MAX_VALUE;
-		//
-		//		// Parcours de la liste des attractions
-		//
-		//		int numberOfAttractions = 5;
-		//
-		//		for (Attraction a : attractions) {
-		//
-		//			while (numberOfAttractions > 0) {
-		//				NearByAttractionDto dto = new NearByAttractionDto();
-		//				dto.setAttractionName(a.attractionName);
-		//				dto.setAttractionLatitude(a.latitude);
-		//				dto.setAttractionLongitude(a.longitude);
-		//				double distanceBetween = this.distanceBetweenTwoPoints(userLocation, a);
-		//				dto.setDistanceBetween(distanceBetween);
-		//				nearByAttractions.add(dto);
-		//				if(distanceBetween < distanceLimiteMin) {
-		//					distanceLimiteMin = distanceBetween;
-		//				}
-		//				numberOfAttractions--;
-		//			}
 
 	}
 

@@ -5,8 +5,11 @@ import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import tourGuide.exception.UserNotFoundException;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.user.User;
+import tourGuide.user.UserReward;
+import tripPricer.Provider;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -30,14 +33,14 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public Optional<User> getUserByUserName(String userName) {
+	public Optional<User> getUserByUserName(String userName) throws UserNotFoundException {
 
 		for(String s : users.keySet()) {
 			if(s.equalsIgnoreCase(userName)){
 				return Optional.of(users.get(s));
 			}
 		}
-		logger.error("User not found");
+		logger.error("User with userName " + userName + " was not found");
 		return Optional.empty();
 	}
 
@@ -45,6 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
 	public Optional<User> addUser(User user){
 
 		if(isUserAlreadyRegistered(user)) {
+			logger.error("User not registered : user with userName " + user.getUserName() + " already exists");
 			return Optional.empty();
 		} else {
 			users.put(user.getUserName(), user);
@@ -74,12 +78,19 @@ public class UserRepositoryImpl implements UserRepository {
 
 		for(User u : users.values()) {
 			currentLocations.put(u.getUserId(), u.getLastVisitedLocation().location);
-
 		}
 		return currentLocations;
 	}
 
+	@Override
+	public List<UserReward> getUserRewards(String userName) throws UserNotFoundException {
+		return this.getUserByUserName(userName).get().getUserRewards();
+	}
 
+	@Override
+	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
+		return this.getUserByUserName(userName).get().getTripDeals();
+	}
 
 
 	/**********************************************************************************
