@@ -15,7 +15,7 @@ import java.util.Map;
 @ControllerAdvice
 public class AdviceController extends ResponseEntityExceptionHandler {
 
-	private static final String MESSAGE = "message ";
+	private static final String MESSAGE = "error ";
 
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<Object> userNotFoundExceptionHandler(UserNotFoundException ex, WebRequest request) {

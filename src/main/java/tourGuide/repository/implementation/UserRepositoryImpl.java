@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.repository.UserRepository;
-import tourGuide.userModel.User;
-import tourGuide.userModel.UserReward;
+import tourGuide.user.User;
+import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
 import java.time.LocalDateTime;
@@ -46,30 +46,29 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public Optional<User> addUser(User user){
+	public Optional<User> addUser(User user) {
 
 		if(isUserAlreadyRegistered(user)) {
-			logger.error("User not registered : user with userName " + user.getUserName() + " already exists");
+			logger.error("User with userName " + user.getUserName() + " already exists");
 			return Optional.empty();
 		} else {
-			users.put(user.getUserName(), user);
-			return Optional.of(user);
+			User userSaved = new User(UUID.randomUUID(), user.getUserName(), user.getPhoneNumber(), user.getEmailAddress());
+			users.put(userSaved.getUserName(), userSaved);
+//			generateUserLocationHistory(userSaved);
+			return Optional.of(userSaved);
 		}
 	}
 
 	private boolean isUserAlreadyRegistered(User user) {
-		for(String s : users.keySet()) {
-			if(s.equalsIgnoreCase(user.getUserName())){
-				return true;
-			}
-		}
-		return false;
+
+		return users.containsKey(user.getUserName());
+
 	}
 
 	@Override
-	public Location getUserLocation(User user) {
+	public Optional<Location> getUserLocation(User user) {
 		return (user.getVisitedLocations().size() > 0) ?
-				user.getLastVisitedLocation().location : null;
+				Optional.of(user.getLastVisitedLocation().location) : Optional.empty();
 	}
 
 	@Override
@@ -85,11 +84,20 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	public List<UserReward> getUserRewards(String userName) throws UserNotFoundException {
+		if(this.getUserByUserName(userName).isEmpty()) {
+			logger.error("User with userName " + userName + " was not found");
+			throw new UserNotFoundException("User with userName " + userName + " was not found");
+		}
 		return this.getUserByUserName(userName).get().getUserRewards();
 	}
 
 	@Override
 	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
+
+		if(this.getUserByUserName(userName).isEmpty()) {
+			logger.error("User with userName " + userName + " was not found");
+			throw new UserNotFoundException("User with userName " + userName + " was not found");
+		}
 		return this.getUserByUserName(userName).get().getTripDeals();
 	}
 

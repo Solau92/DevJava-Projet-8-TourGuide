@@ -1,6 +1,7 @@
 package tourGuide.tracker;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,24 +11,27 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import tourGuide.service.TourGuideService;
+import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
-import tourGuide.userModel.User;
+import tourGuide.user.User;
 
 public class Tracker extends Thread {
 	private Logger logger = LoggerFactory.getLogger(Tracker.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-	private TourGuideService tourGuideService;
+	private TourGuideServiceImpl tourGuideServiceImpl;
 
-	@Autowired
-	private UserServiceImpl userServiceImpl;
+	private UserServiceImpl userService;
+
+//	@Autowired
+//	private UserServiceImpl userServiceImpl;
 
 	private boolean stop = false;
 
-	public Tracker(TourGuideService tourGuideService) {
-		this.tourGuideService = tourGuideService;
+	public Tracker(TourGuideServiceImpl tourGuideServiceImpl, UserServiceImpl userService) {
+		this.tourGuideServiceImpl = tourGuideServiceImpl;
+//		this.userService = userService;
+		this.userService = userService;
 		executorService.submit(this);
 	}
 
@@ -49,10 +53,13 @@ public class Tracker extends Thread {
 				break;
 			}
 
-			List<User> users = new ArrayList<>(userServiceImpl.getAllUsers().values());
+			Collection<User> userCollection = userService.getAllUsers().values();
+			List<User> users = new ArrayList<>(userCollection);
+
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			stopWatch.start();
-			users.forEach(u -> tourGuideService.trackUserLocation(u));
+			users.forEach(u -> tourGuideServiceImpl.trackUserLocation(u));
+			logger.debug("trackUserLocation !");
 			stopWatch.stop();
 			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
 			stopWatch.reset();

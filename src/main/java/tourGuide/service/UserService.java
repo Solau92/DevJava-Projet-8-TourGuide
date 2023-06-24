@@ -3,8 +3,8 @@ package tourGuide.service;
 import gpsUtil.location.Location;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
-import tourGuide.userModel.User;
-import tourGuide.userModel.UserReward;
+import tourGuide.user.User;
+import tourGuide.user.UserReward;
 
 import java.util.Map;
 import java.util.Optional;
@@ -21,7 +21,7 @@ public interface UserService {
 
 	Optional<User> addUser(User user) throws UserAlreadyExistsException;
 
-	Location getUserLocation(String userName) throws UserNotFoundException;
+	Optional<Location> getUserLocation(String userName) throws UserNotFoundException;
 
 	Map<UUID, Location> getAllCurrentLocations();
 

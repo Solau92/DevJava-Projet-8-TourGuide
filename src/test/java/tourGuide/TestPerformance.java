@@ -1,9 +1,22 @@
-package tourGuide;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-public class TestPerformance {
-
+//package tourGuide;
+//
+//import gpsUtil.GpsUtil;
+//import gpsUtil.location.Attraction;
+//import gpsUtil.location.VisitedLocation;
+//import org.junit.jupiter.api.Disabled;
+//import org.junit.jupiter.api.Test;
+//import rewardCentral.RewardCentral;
+//import tourGuide.helper.InternalTestHelper;
+//import tourGuide.service.RewardsService;
+//import tourGuide.service.TourGuideService;
+//
+//import java.util.ArrayList;
+//import java.util.concurrent.TimeUnit;
+//
+//import static org.junit.jupiter.api.Assertions.assertTrue;
+//
+//public class TestPerformance {
+//
 //	/*
 //	 * A note on performance improvements:
 //	 *
@@ -76,5 +89,5 @@ public class TestPerformance {
 //		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 //		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 //	}
-
-}
+//
+//}

@@ -7,10 +7,9 @@ import org.springframework.stereotype.Service;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.UserRepositoryImpl;
-import tourGuide.service.TourGuideService;
 import tourGuide.service.UserService;
-import tourGuide.userModel.User;
-import tourGuide.userModel.UserReward;
+import tourGuide.user.User;
+import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
 import java.util.*;
@@ -18,11 +17,10 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
-	public TourGuideService tourGuideService;
 	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	private UserRepositoryImpl userRepository;
 
-	public UserServiceImpl(/*GpsUtil gpsUtil,*/ UserRepositoryImpl userRepository) {
+	public UserServiceImpl(UserRepositoryImpl userRepository/*, TourGuideService tourGuideService*/) {
 		this.userRepository = userRepository;
 	}
 
@@ -36,34 +34,38 @@ public class UserServiceImpl implements UserService {
 
 		if (userRepository.getUserByUserName(userName).isEmpty()) {
 			throw new UserNotFoundException("User with userName " + userName + " was not found");
+		} else {
+			return userRepository.getUserByUserName(userName);
 		}
-		return userRepository.getUserByUserName(userName);
 	}
 
 	@Override
 	public Optional<User> addUser(User user) throws UserAlreadyExistsException {
-		if (userRepository.addUser(user).isEmpty()) {
-			throw new UserAlreadyExistsException("User with userName " + user.getUserName() + " already exists");
+
+		Optional<User> optionalUser = userRepository.addUser(user);
+
+		if (optionalUser.isEmpty()) {
+			logger.error("User not registered : user with userName " + user.getUserName() + " already exists");
+			throw new UserAlreadyExistsException("User not registered : user with userName " + user.getUserName() + " already exists");
 		}
-		return userRepository.addUser(user);
+		return optionalUser;
 	}
 
-	@Override
-	public Location getUserLocation(String userName) throws UserNotFoundException {
+		@Override
+		public Optional<Location> getUserLocation(String userName) throws UserNotFoundException {
 
-		User user = this.getUserByUserName(userName).get();
+			User user = this.getUserByUserName(userName).get();
+			Optional<Location> userLocation = userRepository.getUserLocation(user);
 
-		if (userRepository.getUserLocation(user) != null) {
-			return userRepository.getUserLocation(user);
-		} else {
-			// Voir si on fait autrement que d'utiliser tourGuideService ??
-			return tourGuideService.trackUserLocation(user).location;
+			if (!userLocation.isEmpty()) {
+				return userLocation;
+			}
+			return Optional.empty();
 		}
-	}
+
 
 	@Override
 	public Map<UUID, Location> getAllCurrentLocations() {
-		Map<UUID, Location> currentLocations = new HashMap<>();
 		return userRepository.getAllCurrentLocations();
 	}
 

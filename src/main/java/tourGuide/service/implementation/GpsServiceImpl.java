@@ -39,7 +39,7 @@ public class GpsServiceImpl implements GpsService {
 	@Override
 	public List<NearByAttractionDto> getNearbyAttractions(String userName) throws UserNotFoundException {
 
-		Location userLocation = userService.getUserLocation(userName);
+		Location userLocation = userService.getUserLocation(userName).get();
 		double userLatitude = userLocation.latitude;
 		double userLongitude = userLocation.longitude;
 
@@ -77,7 +77,6 @@ public class GpsServiceImpl implements GpsService {
 		}
 
 		return nearByAttractions;
-
 	}
 
 	private double distanceBetweenTwoPoints(Location userLocation, Location attractionLocation) {

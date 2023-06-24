@@ -2,8 +2,8 @@ package tourGuide.repository;
 
 import gpsUtil.location.Location;
 import tourGuide.exception.UserNotFoundException;
-import tourGuide.userModel.User;
-import tourGuide.userModel.UserReward;
+import tourGuide.user.User;
+import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
 import java.util.List;
@@ -17,9 +17,9 @@ public interface UserRepository {
 
 	Optional<User> getUserByUserName(String userName) throws UserNotFoundException;
 
-	Optional<User> addUser(User user);
+	Optional<User> addUser(User user) throws Exception;
 
-	Location getUserLocation(User user);
+	Optional<Location> getUserLocation(User user);
 
 	Map<UUID, Location> getAllCurrentLocations();
 

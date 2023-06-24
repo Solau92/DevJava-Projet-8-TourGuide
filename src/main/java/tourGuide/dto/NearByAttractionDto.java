@@ -1,7 +1,5 @@
 package tourGuide.dto;
 
-import com.jsoniter.annotation.JsonProperty;
-
 public class NearByAttractionDto {
 
 	private String attractionName;

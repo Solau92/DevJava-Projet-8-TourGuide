@@ -6,32 +6,36 @@ import java.util.UUID;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import tourGuide.dto.NearByAttractionDto;
+import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.service.implementation.GpsServiceImpl;
-import tourGuide.service.TourGuideService;
+import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
-import tourGuide.userModel.UserReward;
+import tourGuide.user.User;
+import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
 @RestController
 public class TourGuideController {
 
-	private TourGuideService tourGuideService;
+	private Logger logger = LoggerFactory.getLogger(TourGuideController.class);
+
+	private TourGuideServiceImpl tourGuideServiceImpl;
 
 	private UserServiceImpl userService;
 
 	private GpsServiceImpl gpsService;
 
-	public TourGuideController(TourGuideService tourGuideService, UserServiceImpl userService, GpsServiceImpl gpsService) {
+	public TourGuideController(TourGuideServiceImpl tourGuideServiceImpl, UserServiceImpl userService, GpsServiceImpl gpsService) {
 		this.userService = userService;
-		this.tourGuideService = tourGuideService;
+		this.tourGuideServiceImpl = tourGuideServiceImpl;
 		this.gpsService = gpsService;
 	}
 
@@ -40,10 +44,9 @@ public class TourGuideController {
 		return "Greetings from TourGuide!";
 	}
 
-	// Instead of old version
 	@RequestMapping("/getLocation")
 	public ResponseEntity<Location> getLocation(@RequestParam String userName) throws UserNotFoundException {
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getUserLocation(userName));
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideServiceImpl.getUserLocation(userName));
 	}
 
 	//  TodoNearlyDone : reward points
@@ -60,29 +63,26 @@ public class TourGuideController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getAllAttractions());
 	}
 
-	// Instead of old version
 	@RequestMapping("/getRewards")
 	public ResponseEntity<List<UserReward>> getRewards(@RequestParam String userName) throws UserNotFoundException {
 		// A mettre dans TourGuideService ?? gpsService ? UserService ??
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getUserRewards(userName));
 	}
 
-	// Instead of old version
 	@RequestMapping("/getAllCurrentLocations")
 	public ResponseEntity<Map<UUID, Location>> getAllCurrentLocations() {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getAllCurrentLocations());
 	}
 
-	// Instead of old version
 	@RequestMapping("/getTripDeals")
 	public ResponseEntity<List<Provider>> getTripDeals(@RequestParam String userName) throws UserNotFoundException {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getTripDeals(userName));
 	}
 
-	// A priori plus utile
-	//    private User getUser(String userName) {
-	//    	return tourGuideService.getUser(userName);
-	//    }
-
+	// Added to test
+	@PostMapping("/addUser")
+	public ResponseEntity<User> addUser(@RequestBody User user) throws UserAlreadyExistsException {
+		return ResponseEntity.status(HttpStatus.CREATED).body(userService.addUser(user).get());
+	}
 
 }
