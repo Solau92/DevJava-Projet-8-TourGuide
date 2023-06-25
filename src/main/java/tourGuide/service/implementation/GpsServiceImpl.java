@@ -22,11 +22,14 @@ public class GpsServiceImpl implements GpsService {
 
 	private GpsRepositoryImpl gpsRepository;
 
+	private TourGuideServiceImpl tourGuideService;
+
 	private UserService userService;
 
-	public GpsServiceImpl(GpsRepositoryImpl gpsRepository, UserService userService) {
+	public GpsServiceImpl(GpsRepositoryImpl gpsRepository, UserService userService, TourGuideServiceImpl tourGuideService) {
 		this.gpsRepository = gpsRepository;
 		this.userService = userService;
+		this.tourGuideService = tourGuideService;
 	}
 
 	@Override
@@ -39,7 +42,7 @@ public class GpsServiceImpl implements GpsService {
 	@Override
 	public List<NearByAttractionDto> getNearbyAttractions(String userName) throws UserNotFoundException {
 
-		Location userLocation = userService.getUserLocation(userName).get();
+		Location userLocation = tourGuideService.getUserLocation(userName);
 		double userLatitude = userLocation.latitude;
 		double userLongitude = userLocation.longitude;
 

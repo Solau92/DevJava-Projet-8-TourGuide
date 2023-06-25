@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 		Optional<User> optionalUser = userRepository.addUser(user);
 
 		if (optionalUser.isEmpty()) {
-			logger.error("User not registered : user with userName " + user.getUserName() + " already exists");
+//			logger.error("User not registered : user with userName " + user.getUserName() + " already exists");
 			throw new UserAlreadyExistsException("User not registered : user with userName " + user.getUserName() + " already exists");
 		}
 		return optionalUser;
@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserService {
 			}
 			return Optional.empty();
 		}
-
 
 	@Override
 	public Map<UUID, Location> getAllCurrentLocations() {
