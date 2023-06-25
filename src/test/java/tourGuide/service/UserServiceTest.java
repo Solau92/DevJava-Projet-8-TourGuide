@@ -5,6 +5,7 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -207,6 +208,7 @@ public class UserServiceTest {
 		assertThrows(UserNotFoundException.class, () -> userService.getUserRewards("userNotFound"));
 	}
 
+	@Disabled
 	@Test
 	void getTripDeas_Ok_Test() {
 

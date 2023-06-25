@@ -3,6 +3,7 @@ package tourGuide.controller;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,8 +22,7 @@ import tourGuide.user.User;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -218,6 +218,7 @@ public class TourGuideControllerTest {
 		assertEquals(ACCEPTED, statusResponse);
 	}
 
+	@Disabled
 	@Test
 	void getRewards_Ok_Test() {
 
@@ -232,8 +233,11 @@ public class TourGuideControllerTest {
 
 		// THEN
 		//	assertEquals(ACCEPTED, statusResponse);
+		fail("not yet implemented");
+
 	}
 
+	@Disabled
 	@Test
 	void getTripDeals_Ok_Test() {
 
@@ -248,6 +252,7 @@ public class TourGuideControllerTest {
 
 		// THEN
 		//	assertEquals(ACCEPTED, statusResponse);
+		fail("not yet implemented");
 	}
 
 	@Test

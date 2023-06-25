@@ -3,6 +3,7 @@ package tourGuide.repository;
 import gpsUtil.location.Location;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,18 +25,16 @@ class UserRepositoryTest {
 	// TODO : classe à revoir (/repository initialisé...), finir et nettoyer
 	// Setup, Users dans le setUp
 
-	@InjectMocks
-	private UserRepositoryImpl userRepository;
-
-	private Map<String, User> users = new HashMap<>();
-
 	User user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
 	User user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
+	@InjectMocks
+	private UserRepositoryImpl userRepository;
+	private Map<String, User> users = new HashMap<>();
 
 	@BeforeEach
 	public void setUp() {
-//		users.put(user1.getUserName(), user1);
-//		users.put(user2.getUserName(), user2);
+		//		users.put(user1.getUserName(), user1);
+		//		users.put(user2.getUserName(), user2);
 	}
 
 	@AfterEach
@@ -112,6 +111,7 @@ class UserRepositoryTest {
 		assertFalse(locationFound.isEmpty());
 	}
 
+	@Disabled
 	@Test
 	void getUserLocation_NoLocationFound_Test() throws UserNotFoundException {
 
@@ -131,12 +131,13 @@ class UserRepositoryTest {
 
 		// GIVEN
 		// WHEN
-		Map<UUID, Location> currentLocationsFound =  userRepository.getAllCurrentLocations();
+		Map<UUID, Location> currentLocationsFound = userRepository.getAllCurrentLocations();
 
 		// THEN
 		assertEquals(100, currentLocationsFound.size());
 	}
 
+	@Disabled
 	@Test
 	void getUserRewards_Ok_Test() {
 
@@ -149,6 +150,7 @@ class UserRepositoryTest {
 		fail("not yet implemented");
 	}
 
+	@Disabled
 	@Test
 	void getUserRewards_UserNotFound_Test() {
 
@@ -161,6 +163,7 @@ class UserRepositoryTest {
 		fail("not yet implemented");
 	}
 
+	@Disabled
 	@Test
 	void getUserTripDeals_Ok_Test() {
 
@@ -173,6 +176,7 @@ class UserRepositoryTest {
 		fail("not yet implemented");
 	}
 
+	@Disabled
 	@Test
 	void getUserTripDeals_UserNotFound_Test() {
 

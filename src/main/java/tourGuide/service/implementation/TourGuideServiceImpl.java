@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.exception.UserNotFoundException;
-import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
@@ -20,16 +19,16 @@ import tripPricer.TripPricer;
 public class TourGuideServiceImpl implements TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideServiceImpl.class);
 	private final GpsUtil gpsUtil;
-	private final RewardsService rewardsService;
+	private final RewardsServiceImpl rewardsServiceImpl;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
 
 	private UserServiceImpl userService;
 	
-	public TourGuideServiceImpl(GpsUtil gpsUtil, RewardsService rewardsService, UserServiceImpl userService) {
+	public TourGuideServiceImpl(GpsUtil gpsUtil, RewardsServiceImpl rewardsServiceImpl, UserServiceImpl userService) {
 		this.gpsUtil = gpsUtil;
-		this.rewardsService = rewardsService;
+		this.rewardsServiceImpl = rewardsServiceImpl;
 		this.userService = userService;
 		
 //		if(testMode) {

@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.UserRepositoryImpl;
+import tourGuide.service.implementation.RewardsServiceImpl;
 import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
 import tourGuide.tracker.Tracker;
@@ -37,7 +38,7 @@ public class TourGuideServiceTest {
 	private GpsUtil gpsUtil;
 
 	@Mock
-	private RewardsService rewardService;
+	private RewardsServiceImpl rewardService;
 
 	@Mock
 	private TripPricer tripPricer;
