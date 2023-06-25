@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class GpsServiceTest {
+class GpsServiceTest {
 
 	@InjectMocks
 	private GpsServiceImpl gpsService;
@@ -44,22 +44,20 @@ public class GpsServiceTest {
 	@Mock
 	private TourGuideServiceImpl tourGuideService;
 
-	Attraction attraction1;
-	Attraction attraction2;
-	Attraction attraction3;
-	Attraction attraction4;
-	Attraction attraction5;
-	Attraction attraction6;
 	List<Attraction> attractions;
+
+	User user1;
+
+	Location location1;
 
 	@BeforeEach
 	void setUp() {
-		attraction1 = new Attraction("attraction1", "city1", "state1", 50.0, 60.0);
-		attraction2 = new Attraction("attraction2", "city2", "state2", 55.0, 66.0);
-		attraction3 = new Attraction("attraction3", "city3", "state3", 60.0, 70.0);
-		attraction4 = new Attraction("attraction4", "city4", "state4", 65.0, 77.0);
-		attraction5 = new Attraction("attraction5", "city5", "state5", 70.0, 80.0);
-		attraction6 = new Attraction("attraction6", "city6", "state6", 75.0, 88.0);
+		Attraction attraction1 = new Attraction("attraction1", "city1", "state1", 50.0, 60.0);
+		Attraction attraction2 = new Attraction("attraction2", "city2", "state2", 55.0, 66.0);
+		Attraction attraction3 = new Attraction("attraction3", "city3", "state3", 60.0, 70.0);
+		Attraction attraction4 = new Attraction("attraction4", "city4", "state4", 65.0, 77.0);
+		Attraction attraction5 = new Attraction("attraction5", "city5", "state5", 70.0, 80.0);
+		Attraction attraction6 = new Attraction("attraction6", "city6", "state6", 75.0, 88.0);
 		attractions = new ArrayList<>();
 		attractions.add(attraction1);
 		attractions.add(attraction2);
@@ -67,6 +65,9 @@ public class GpsServiceTest {
 		attractions.add(attraction4);
 		attractions.add(attraction5);
 		attractions.add(attraction6);
+
+		user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
+		location1 = new Location(50.0, 60.0);
 	}
 
 	@Test
@@ -80,7 +81,7 @@ public class GpsServiceTest {
 
 		// THEN
 		assertEquals(6, attractionsFound.size());
-		assertTrue(attractionsFound.contains(attraction1));
+		assertTrue(attractionsFound.contains(attractions.get(0)));
 
 	}
 
@@ -88,9 +89,6 @@ public class GpsServiceTest {
 	void getNearbyAttractions_Ok_Test() throws UserNotFoundException {
 
 		// GIVEN
-
-		User user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
-		Location location1 = new Location(50.0, 60.0);
 
 		when(userRepository.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
 		when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
@@ -108,9 +106,6 @@ public class GpsServiceTest {
 
 	@Test
 	void getNearbyAttractions_UserNotFound_Test() throws UserNotFoundException {
-
-		User user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
-		Location location1 = new Location(50.0, 60.0);
 
 		// GIVEN
 		when(userRepository.getUserByUserName(anyString())).thenReturn(Optional.empty());

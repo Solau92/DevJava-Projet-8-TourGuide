@@ -25,7 +25,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class UserServiceTest {
+class UserServiceTest {
+
+	// TODO : revoir setUp quand classe terminée
 
 	@InjectMocks
 	private UserServiceImpl userService;
@@ -33,11 +35,13 @@ public class UserServiceTest {
 	private UserRepositoryImpl userRepository;
 	private Map<String, User> users = new HashMap<>();
 
-	User user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
-	User user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
+	User user1;
+	User user2;
 
 	@BeforeEach
 	public void setUp() {
+		user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
+		user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
 		users.put(user1.getUserName(), user1);
 		users.put(user2.getUserName(), user2);
 	}

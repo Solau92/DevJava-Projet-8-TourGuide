@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class GpsRepositoryTest {
+class GpsRepositoryTest {
 
 	@InjectMocks
 	private GpsRepositoryImpl gpsRepository;
@@ -43,11 +43,5 @@ public class GpsRepositoryTest {
 		assertEquals(2, attractionsFound.size());
 
 	}
-
-
-
-
-
-
 
 }

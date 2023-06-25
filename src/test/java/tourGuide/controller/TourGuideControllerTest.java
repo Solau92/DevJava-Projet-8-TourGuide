@@ -32,23 +32,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 @SpringBootTest
 public class TourGuideControllerTest {
 
-	Attraction attraction1;
-	Attraction attraction2;
-	Attraction attraction3;
-	Attraction attraction4;
-	Attraction attraction5;
-	Attraction attraction6;
-	List<Attraction> attractions;
-	NearByAttractionDto attractionDto1;
-	NearByAttractionDto attractionDto2;
-	NearByAttractionDto attractionDto3;
-	NearByAttractionDto attractionDto4;
-	NearByAttractionDto attractionDto5;
-	List<NearByAttractionDto> attractionsDto = new ArrayList<>();
-	User user1;
-	User user2;
-	User user3;
-	Map<UUID, Location> currentLocations;
 	@InjectMocks
 	private TourGuideController tourGuideController;
 	@Mock
@@ -62,14 +45,20 @@ public class TourGuideControllerTest {
 	@Mock
 	private GpsRepositoryImpl gpsRepository;
 
+	List<Attraction> attractions;
+	List<NearByAttractionDto> attractionsDto = new ArrayList<>();
+	User user1;
+
+	Map<UUID, Location> currentLocations;
+
 	void setUpAttractions() {
 
-		attraction1 = new Attraction("attraction1", "city1", "state1", 50.0, 60.0);
-		attraction2 = new Attraction("attraction2", "city2", "state2", 55.0, 66.0);
-		attraction3 = new Attraction("attraction3", "city3", "state3", 60.0, 70.0);
-		attraction4 = new Attraction("attraction4", "city4", "state4", 65.0, 77.0);
-		attraction5 = new Attraction("attraction5", "city5", "state5", 70.0, 80.0);
-		attraction6 = new Attraction("attraction6", "city6", "state6", 75.0, 88.0);
+		Attraction attraction1 = new Attraction("attraction1", "city1", "state1", 50.0, 60.0);
+		Attraction attraction2 = new Attraction("attraction2", "city2", "state2", 55.0, 66.0);
+		Attraction attraction3 = new Attraction("attraction3", "city3", "state3", 60.0, 70.0);
+		Attraction attraction4 = new Attraction("attraction4", "city4", "state4", 65.0, 77.0);
+		Attraction attraction5 = new Attraction("attraction5", "city5", "state5", 70.0, 80.0);
+		Attraction attraction6 = new Attraction("attraction6", "city6", "state6", 75.0, 88.0);
 		attractions = new ArrayList<>();
 		attractions.add(attraction1);
 		attractions.add(attraction2);
@@ -78,15 +67,15 @@ public class TourGuideControllerTest {
 		attractions.add(attraction5);
 		attractions.add(attraction6);
 
-		attractionDto1 = new NearByAttractionDto();
+		NearByAttractionDto attractionDto1 = new NearByAttractionDto();
 		attractionDto1.setAttractionName(attraction1.attractionName);
-		attractionDto2 = new NearByAttractionDto();
+		NearByAttractionDto attractionDto2 = new NearByAttractionDto();
 		attractionDto2.setAttractionName(attraction2.attractionName);
-		attractionDto3 = new NearByAttractionDto();
+		NearByAttractionDto attractionDto3 = new NearByAttractionDto();
 		attractionDto3.setAttractionName(attraction3.attractionName);
-		attractionDto4 = new NearByAttractionDto();
+		NearByAttractionDto attractionDto4 = new NearByAttractionDto();
 		attractionDto4.setAttractionName(attraction4.attractionName);
-		attractionDto5 = new NearByAttractionDto();
+		NearByAttractionDto attractionDto5 = new NearByAttractionDto();
 		attractionDto5.setAttractionName(attraction5.attractionName);
 		attractionsDto.add(attractionDto1);
 		attractionsDto.add(attractionDto2);
@@ -102,12 +91,12 @@ public class TourGuideControllerTest {
 		VisitedLocation visitedLocation1 = new VisitedLocation(user1.getUserId(), location1, new Date());
 		user1.addToVisitedLocations(visitedLocation1);
 
-		user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
+		User user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
 		Location location2 = new Location(0.6, 0.7);
 		VisitedLocation visitedLocation2 = new VisitedLocation(user2.getUserId(), location2, new Date());
 		user2.addToVisitedLocations(visitedLocation2);
 
-		user3 = new User(UUID.randomUUID(), "userName3", "phoneNumber3", "emailAddress3");
+		User user3 = new User(UUID.randomUUID(), "userName3", "phoneNumber3", "emailAddress3");
 		Location location3 = new Location(0.7, 0.8);
 		VisitedLocation visitedLocation3 = new VisitedLocation(user3.getUserId(), location3, new Date());
 		user3.addToVisitedLocations(visitedLocation1);
@@ -116,11 +105,6 @@ public class TourGuideControllerTest {
 		currentLocations.put(user1.getUserId(), location1);
 		currentLocations.put(user2.getUserId(), location2);
 		currentLocations.put(user3.getUserId(), location3);
-	}
-
-	void setUpLocations() {
-
-
 	}
 
 	@Test
@@ -176,7 +160,7 @@ public class TourGuideControllerTest {
 
 		// THEN
 		assertEquals(5, listResult.size());
-		assertTrue(listResult.contains(attractionDto2));
+		assertTrue(listResult.contains(attractionsDto.get(1)));
 		assertEquals(ACCEPTED, statusResponse);
 	}
 
@@ -195,7 +179,7 @@ public class TourGuideControllerTest {
 
 		// THEN
 		assertEquals(6, listResult.size());
-		assertTrue(listResult.contains(attraction2));
+		assertTrue(listResult.contains(attractions.get(1)));
 		assertEquals(ACCEPTED, statusResponse);
 	}
 
@@ -214,7 +198,7 @@ public class TourGuideControllerTest {
 
 		// THEN
 		assertEquals(3, listResult.size());
-		assertEquals(0.6, listResult.get(user2.getUserId()).latitude);
+		assertEquals(0.5, listResult.get(user1.getUserId()).latitude);
 		assertEquals(ACCEPTED, statusResponse);
 	}
 

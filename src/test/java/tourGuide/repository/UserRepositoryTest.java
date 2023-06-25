@@ -25,14 +25,18 @@ class UserRepositoryTest {
 	// TODO : classe à revoir (/repository initialisé...), finir et nettoyer
 	// Setup, Users dans le setUp
 
-	User user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
-	User user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
+
 	@InjectMocks
 	private UserRepositoryImpl userRepository;
 	private Map<String, User> users = new HashMap<>();
 
+	User user1;
+	User user2;
+
 	@BeforeEach
 	public void setUp() {
+		user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
+		user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
 		//		users.put(user1.getUserName(), user1);
 		//		users.put(user2.getUserName(), user2);
 	}
