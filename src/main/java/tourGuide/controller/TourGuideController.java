@@ -27,15 +27,15 @@ public class TourGuideController {
 
 	private Logger logger = LoggerFactory.getLogger(TourGuideController.class);
 
-	private TourGuideServiceImpl tourGuideServiceImpl;
+	private TourGuideServiceImpl tourGuideService;
 
 	private UserServiceImpl userService;
 
 	private GpsServiceImpl gpsService;
 
-	public TourGuideController(TourGuideServiceImpl tourGuideServiceImpl, UserServiceImpl userService, GpsServiceImpl gpsService) {
+	public TourGuideController(TourGuideServiceImpl tourGuideService, UserServiceImpl userService, GpsServiceImpl gpsService) {
 		this.userService = userService;
-		this.tourGuideServiceImpl = tourGuideServiceImpl;
+		this.tourGuideService = tourGuideService;
 		this.gpsService = gpsService;
 	}
 
@@ -46,7 +46,7 @@ public class TourGuideController {
 
 	@RequestMapping("/getLocation")
 	public ResponseEntity<Location> getLocation(@RequestParam String userName) throws UserNotFoundException {
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideServiceImpl.getUserLocation(userName));
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getUserLocation(userName));
 	}
 
 	//  TodoNearlyDone : reward points
@@ -59,7 +59,7 @@ public class TourGuideController {
 
 	// Added to test
 	@RequestMapping("/getAllAttractions")
-	public ResponseEntity<List<Attraction>> getNearbyAttractions() {
+	public ResponseEntity<List<Attraction>> getAllAttractions() {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getAllAttractions());
 	}
 

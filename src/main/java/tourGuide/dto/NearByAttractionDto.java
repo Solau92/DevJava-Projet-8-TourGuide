@@ -16,6 +16,7 @@ public class NearByAttractionDto {
 
 	private int rewardPoints;
 
+
 	public void setAttractionName(String attractionName) {
 		this.attractionName = attractionName;
 	}

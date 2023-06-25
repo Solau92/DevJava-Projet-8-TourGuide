@@ -37,7 +37,6 @@ public class GpsServiceImpl implements GpsService {
 		return gpsRepository.getAllAttractions();
 	}
 
-
 	// Voir si doit rester ici...
 	@Override
 	public List<NearByAttractionDto> getNearbyAttractions(String userName) throws UserNotFoundException {
