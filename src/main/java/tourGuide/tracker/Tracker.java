@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
@@ -18,19 +19,17 @@ import tourGuide.user.User;
 public class Tracker extends Thread {
 	private Logger logger = LoggerFactory.getLogger(Tracker.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
-	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+//	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+	private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+
 	private TourGuideServiceImpl tourGuideServiceImpl;
-
 	private UserServiceImpl userService;
-
-//	@Autowired
-//	private UserServiceImpl userServiceImpl;
-
 	private boolean stop = false;
 
 	public Tracker(TourGuideServiceImpl tourGuideServiceImpl, UserServiceImpl userService) {
 		this.tourGuideServiceImpl = tourGuideServiceImpl;
-//		this.userService = userService;
 		this.userService = userService;
 		executorService.submit(this);
 	}
@@ -46,7 +45,9 @@ public class Tracker extends Thread {
 	
 	@Override
 	public void run() {
+
 		StopWatch stopWatch = new StopWatch();
+
 		while(true) {
 			if(Thread.currentThread().isInterrupted() || stop) {
 				logger.debug("Tracker stopping");
@@ -56,13 +57,20 @@ public class Tracker extends Thread {
 			Collection<User> userCollection = userService.getAllUsers().values();
 			List<User> users = new ArrayList<>(userCollection);
 
+			List<User> users1 = users.subList(0, users.size()/2);
+			List<User> users2 = users.subList(users.size()/2 +1, users.size()-1);
+
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			stopWatch.start();
+
+			logger.debug("Thread name :" + Thread.currentThread().getName());
+
 			users.forEach(u -> tourGuideServiceImpl.trackUserLocation(u));
-			logger.debug("trackUserLocation !");
+			logger.debug("trackedUserLocation !");
+
 			stopWatch.stop();
 			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
-			stopWatch.reset();
+
 			try {
 				logger.debug("Tracker sleeping");
 				TimeUnit.SECONDS.sleep(trackingPollingInterval);

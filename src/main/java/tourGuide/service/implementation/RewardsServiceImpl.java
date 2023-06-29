@@ -2,6 +2,8 @@ package tourGuide.service.implementation;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -15,6 +17,8 @@ import tourGuide.user.UserReward;
 
 @Service
 public class RewardsServiceImpl implements RewardsService {
+
+	private Logger logger = LoggerFactory.getLogger(RewardsServiceImpl.class);
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
 	// proximity in miles
@@ -43,12 +47,19 @@ public class RewardsServiceImpl implements RewardsService {
 	public void calculateRewards(User user) {
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
-		
+
+//		logger.debug(String.valueOf(user.getUserRewards().size()));
+
 		for(VisitedLocation visitedLocation : userLocations) {
+//			logger.debug("-" + visitedLocation.location.latitude + " " + visitedLocation.location.longitude);
 			for(Attraction attraction : attractions) {
+//				logger.debug(attraction.attractionName);
 				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+//					logger.debug(String.valueOf(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0));
 					if(nearAttraction(visitedLocation, attraction)) {
+//						logger.debug(String.valueOf(nearAttraction(visitedLocation, attraction)));
 						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
+//						logger.debug(String.valueOf(user.getUserRewards().size()));
 					}
 				}
 			}
@@ -62,6 +73,7 @@ public class RewardsServiceImpl implements RewardsService {
 	
 	@Override
 	public boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
+//		return true;
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	

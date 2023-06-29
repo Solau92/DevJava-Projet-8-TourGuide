@@ -19,7 +19,7 @@ import tripPricer.TripPricer;
 public class TourGuideServiceImpl implements TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideServiceImpl.class);
 	private final GpsUtil gpsUtil;
-	private final RewardsServiceImpl rewardsServiceImpl;
+	private final RewardsServiceImpl rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
@@ -28,7 +28,7 @@ public class TourGuideServiceImpl implements TourGuideService {
 	
 	public TourGuideServiceImpl(GpsUtil gpsUtil, RewardsServiceImpl rewardsServiceImpl, UserServiceImpl userService) {
 		this.gpsUtil = gpsUtil;
-		this.rewardsServiceImpl = rewardsServiceImpl;
+		this.rewardsService = rewardsServiceImpl;
 		this.userService = userService;
 		
 //		if(testMode) {
@@ -58,7 +58,7 @@ public class TourGuideServiceImpl implements TourGuideService {
 
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
-		//		rewardsService.calculateRewards(user);
+		rewardsService.calculateRewards(user);
 		return visitedLocation;
 	}
 

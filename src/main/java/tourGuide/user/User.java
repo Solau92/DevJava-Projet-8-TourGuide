@@ -70,8 +70,19 @@ public class User {
 	}
 	
 	public void addUserReward(UserReward userReward) {
-		if(userRewards.stream().filter(r -> !r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
-			userRewards.add(userReward);
+
+//		if(userRewards.stream().filter(r -> !r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
+
+		if(userRewards.stream().filter(r -> r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
+
+		// userRewards.stream().filter :
+		//        liste des rewards de l'utilisateur
+		// .filter(r -> !r.attraction.attractionName.equals(userReward.attraction)) :
+		//      on ne garde que les rewards dont l'attraction est identique à celle de la reward ajouté
+		// ! .count() == 0
+		//      if est true seulement si attraction a déjà fait l'objet d'une reward ??
+
+		userRewards.add(userReward);
 		}
 	}
 	
