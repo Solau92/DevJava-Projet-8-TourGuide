@@ -184,7 +184,7 @@ public class TourGuideControllerTest {
 	}
 
 	@Test
-	void getAllCurrentLocations_Ok_Test() {
+	void getAllCurrentLocations_Ok_Test() throws UserNotFoundException {
 
 		// GIVEN
 		setUpUsers();

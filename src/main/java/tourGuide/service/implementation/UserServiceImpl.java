@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 		Optional<User> optionalUser = userRepository.addUser(user);
 
 		if (optionalUser.isEmpty()) {
-//			logger.error("User not registered : user with userName " + user.getUserName() + " already exists");
+			logger.error("User not registered : user with userName " + user.getUserName() + " already exists");
 			throw new UserAlreadyExistsException("User not registered : user with userName " + user.getUserName() + " already exists");
 		}
 		return optionalUser;
@@ -73,8 +73,16 @@ public class UserServiceImpl implements UserService {
 		return userRepository.getUserRewards(userName);
 	}
 
+//	@Override
+//	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
+//		// TODO : revoir (V. controlleur)
+//		return userRepository.getTripDeals(userName);
+//	}
+
 	@Override
 	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
+		// TODO : revoir (V. controlleur)
 		return userRepository.getTripDeals(userName);
 	}
+
 }

@@ -73,7 +73,6 @@ public class RewardsServiceImpl implements RewardsService {
 	
 	@Override
 	public boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
-//		return true;
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	

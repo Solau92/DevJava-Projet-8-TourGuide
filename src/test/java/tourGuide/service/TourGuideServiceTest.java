@@ -3,28 +3,27 @@ package tourGuide.service;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.UserRepositoryImpl;
 import tourGuide.service.implementation.RewardsServiceImpl;
 import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
-import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
+import tripPricer.Provider;
 import tripPricer.TripPricer;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -43,8 +42,8 @@ public class TourGuideServiceTest {
 	@Mock
 	private TripPricer tripPricer;
 
-	@Mock
-	private Tracker tracker;
+//	@Mock
+//	private Tracker tracker;
 
 	@Mock
 	private UserServiceImpl userService;
@@ -55,6 +54,11 @@ public class TourGuideServiceTest {
 	User user1;
 	Location location1;
 	VisitedLocation visitedLocation1;
+
+	@BeforeAll
+	static void setUpFormat() {
+		Locale.setDefault(Locale.US);
+	}
 
 	@BeforeEach
 	void setUp() {
@@ -119,6 +123,26 @@ public class TourGuideServiceTest {
 
 		// THEN
 		assertEquals(location1, visitedLocationFound.location);
+		assertEquals(1, user1.getVisitedLocations().size());
+		verify(rewardService, Mockito.times(1)).calculateRewards(user1);
+		assertNotEquals(0, user1.getUserRewards().size());
+	}
+
+	@Test
+	void getTripDeals_Ok_Test() {
+
+		// TODO : revoir
+
+		// GIVEN
+		List<Provider> providers = new ArrayList<>();
+		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(providers);
+
+		// WHEN
+		List<Provider> providersFound = tourGuideService.getTripDeals(user1);
+
+		// THEN
+		assertEquals(5, user1.getTripDeals().size());
+
 	}
 
 }

@@ -69,14 +69,18 @@ public class TourGuideController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getUserRewards(userName));
 	}
 
-	@RequestMapping("/getAllCurrentLocations")
-	public ResponseEntity<Map<UUID, Location>> getAllCurrentLocations() {
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getAllCurrentLocations());
+	@RequestMapping("/getAllCurrentLocations") // En fait : lastVisitedLocation...
+	public ResponseEntity<Map<UUID, Location>> getAllCurrentLocations() throws UserNotFoundException {
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
 	}
 
 	@RequestMapping("/getTripDeals")
 	public ResponseEntity<List<Provider>> getTripDeals(@RequestParam String userName) throws UserNotFoundException {
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getTripDeals(userName));
+		// TODO : à modifier, car doit non seulement renvoyer, mais avant calculer...
+//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getTripDeals(userName));
+		// Voir si je laisse dans tourGuide ou si User Service ?
+		// Et voir si user ou userName en paramètre ?
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getTripDeals(userService.getUserByUserName(userName).get()));
 	}
 
 	// Added to test
