@@ -4,6 +4,7 @@ import gpsUtil.location.Location;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 
 import java.util.Map;
@@ -28,4 +29,6 @@ public interface UserService {
 	List<UserReward> getUserRewards(String userName) throws UserNotFoundException;
 
 	List<Provider> getTripDeals(String userName) throws UserNotFoundException;
+
+	UserPreferences setUserPreferences(User user, UserPreferences userPreferences) throws UserNotFoundException;
 }

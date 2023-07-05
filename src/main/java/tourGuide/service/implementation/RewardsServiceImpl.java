@@ -1,6 +1,12 @@
 package tourGuide.service.implementation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +18,7 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.service.RewardsService;
+import tourGuide.tracker.Worker2;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
@@ -20,6 +27,7 @@ public class RewardsServiceImpl implements RewardsService {
 
 	private Logger logger = LoggerFactory.getLogger(RewardsServiceImpl.class);
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
+	public static final int NUMBER_OF_THREADS = 50;
 
 	// proximity in miles
     private int defaultProximityBuffer = 10;
@@ -27,7 +35,9 @@ public class RewardsServiceImpl implements RewardsService {
 	private int attractionProximityRange = 200;
 	private final GpsUtil gpsUtil;
 	private final RewardCentral rewardsCentral;
-	
+
+
+
 	public RewardsServiceImpl(GpsUtil gpsUtil, RewardCentral rewardCentral) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsCentral = rewardCentral;
@@ -42,28 +52,87 @@ public class RewardsServiceImpl implements RewardsService {
 	public void setDefaultProximityBuffer() {
 		proximityBuffer = defaultProximityBuffer;
 	}
-	
+
 	@Override
-	public void calculateRewards(User user) {
-		List<VisitedLocation> userLocations = user.getVisitedLocations();
+	public void calculateAllRewards(List<User> users) {
+
+		///////////////////// Trouver les rewards
 		List<Attraction> attractions = gpsUtil.getAttractions();
+		List<User> rewardedUsers = new ArrayList<>();
 
-//		logger.debug(String.valueOf(user.getUserRewards().size()));
+		for (User user : users) {
 
-		for(VisitedLocation visitedLocation : userLocations) {
-//			logger.debug("-" + visitedLocation.location.latitude + " " + visitedLocation.location.longitude);
-			for(Attraction attraction : attractions) {
-//				logger.debug(attraction.attractionName);
-				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-//					logger.debug(String.valueOf(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0));
-					if(nearAttraction(visitedLocation, attraction)) {
-//						logger.debug(String.valueOf(nearAttraction(visitedLocation, attraction)));
-						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
-//						logger.debug(String.valueOf(user.getUserRewards().size()));
+			List<VisitedLocation> userLocations = user.getVisitedLocations();
+
+			for (VisitedLocation visitedLocation : userLocations) {
+				for (Attraction attraction : attractions) {
+					if (user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+						if (nearAttraction(visitedLocation, attraction)) {
+							user.addUserReward(new UserReward(visitedLocation, attraction, -1));
+							rewardedUsers.add(user);
+						}
 					}
 				}
 			}
 		}
+
+		logger.info("rewardedUser size : " + rewardedUsers.size());
+
+		///////////////////// Découper ma liste et lancer les threads
+
+		ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
+		List<Worker2> tasks = new ArrayList<>();
+		int bucketSize = users.size() / NUMBER_OF_THREADS;
+
+		for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+			int from = i * bucketSize;
+			int to = (i + 1) * bucketSize;
+			if (i == NUMBER_OF_THREADS - 1 || to > rewardedUsers.size()) {
+				to = rewardedUsers.size();
+			}
+			logger.info("Thread " + (i+1) + " will treat users between " + from + " and " + (to - 1));
+			tasks.add(new Worker2(this, rewardedUsers.subList(from, to)));
+		}
+
+		for(Worker2 t : tasks) {
+			executorService.execute(t);
+			t.stopTracking();
+		}
+
+		executorService.shutdown();
+		try {
+			executorService.awaitTermination(25, TimeUnit.MINUTES);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
+
+	@Override
+	public void calculateRewards(User user) {
+
+		List<VisitedLocation> userLocations = user.getVisitedLocations();
+		List<Attraction> attractions = gpsUtil.getAttractions();
+
+		logger.info(String.valueOf(user.getUserRewards().size()));
+
+		for(VisitedLocation visitedLocation : userLocations) {
+			logger.info("visited location : " + visitedLocation.location.latitude + " " + visitedLocation.location.longitude);
+			for(Attraction attraction : attractions) {
+				logger.info(attraction.attractionName);
+				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+					logger.info("user jamais allé dans attraction");
+					if(nearAttraction(visitedLocation, attraction)) {
+						logger.info("visited location near attraction --> calculate reward");
+						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
+						logger.info("size après add reward : " + String.valueOf(user.getUserRewards().size()));
+					}
+				}
+			}
+		}
+		logger.info("size à la fin : " + String.valueOf(user.getUserRewards().size()));
 	}
 	
 	@Override
@@ -78,6 +147,7 @@ public class RewardsServiceImpl implements RewardsService {
 	
 	@Override
 	public int getRewardPoints(Attraction attraction, User user) {
+		logger.info("getRewardPoints for attraction " + attraction + " and user " + user.getUserName());
 		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 	

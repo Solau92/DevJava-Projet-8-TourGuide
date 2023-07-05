@@ -3,6 +3,7 @@ package tourGuide.repository;
 import gpsUtil.location.Location;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
@@ -26,4 +27,7 @@ public interface UserRepository {
 	List<UserReward> getUserRewards(String userName) throws UserNotFoundException;
 
 	List<Provider> getTripDeals(String userName) throws UserNotFoundException;
+
+	UserPreferences setUserPreferences(User user, UserPreferences userPreferences);
+
 }

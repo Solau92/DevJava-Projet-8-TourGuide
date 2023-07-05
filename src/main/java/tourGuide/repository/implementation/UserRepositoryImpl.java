@@ -9,6 +9,7 @@ import tourGuide.exception.UserNotFoundException;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.repository.UserRepository;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
@@ -101,6 +102,12 @@ public class UserRepositoryImpl implements UserRepository {
 		return this.getUserByUserName(userName).get().getTripDeals();
 	}
 
+	@Override
+	public UserPreferences setUserPreferences(User user, UserPreferences userPreferences) {
+		user.setUserPreferences(userPreferences);
+		return user.getUserPreferences();
+	}
+
 
 	/**********************************************************************************
 	 *
@@ -147,6 +154,7 @@ public class UserRepositoryImpl implements UserRepository {
 		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
 		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
+
 
 
 }

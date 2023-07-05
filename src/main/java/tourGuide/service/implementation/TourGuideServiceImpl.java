@@ -76,12 +76,12 @@ public class TourGuideServiceImpl implements TourGuideService {
 	@Override
 	public void trackAllUsersLocationOnce() {
 
-		// Voir si en paramètre ou pas ?
+		// Voir si en paramètre ou pas ? --> plutôt avec une liste en paramètres, parce que pas forcément tous les users
 		List<User> users = new ArrayList<>(userService.getAllUsers().values());
 
 		ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-		List<Worker> trackers = new ArrayList<Worker>();
+		List<Worker> trackers = new ArrayList<>();
 		int bucketSize = users.size() / NUMBER_OF_THREADS;
 
 		for (int i = 0; i < NUMBER_OF_THREADS; i++) {
@@ -162,7 +162,7 @@ public class TourGuideServiceImpl implements TourGuideService {
 		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
 				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
 		user.setTripDeals(providers);
-		return providers;
+		return providers; // ou userService.getTripDeals ??
 	}
 
 	private void addShutDownHook() { // TODO : à voir

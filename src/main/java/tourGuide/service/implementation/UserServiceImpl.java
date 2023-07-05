@@ -9,6 +9,7 @@ import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.UserRepositoryImpl;
 import tourGuide.service.UserService;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
@@ -73,16 +74,15 @@ public class UserServiceImpl implements UserService {
 		return userRepository.getUserRewards(userName);
 	}
 
-//	@Override
-//	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
-//		// TODO : revoir (V. controlleur)
-//		return userRepository.getTripDeals(userName);
-//	}
-
 	@Override
 	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
 		// TODO : revoir (V. controlleur)
 		return userRepository.getTripDeals(userName);
+	}
+
+	@Override
+	public UserPreferences setUserPreferences(User user, UserPreferences userPreferences) throws UserNotFoundException {
+		return userRepository.setUserPreferences(user, userPreferences);
 	}
 
 }
