@@ -14,6 +14,8 @@ import java.util.UUID;
 
 public interface UserRepository {
 
+//	void setUsersForTests(Map<String, User> users);
+
 	Map<String, User> getAllUsers();
 
 	Optional<User> getUserByUserName(String userName) throws UserNotFoundException;

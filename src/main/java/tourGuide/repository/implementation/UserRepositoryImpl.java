@@ -4,9 +4,12 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.helper.InternalTestHelper;
+//import tourGuide.helper.UsersTestConfig;
+import tourGuide.helper.UsersTestConfig;
 import tourGuide.repository.UserRepository;
 import tourGuide.user.User;
 import tourGuide.user.UserPreferences;
@@ -19,26 +22,34 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 @Repository
+@DependsOn("usersTestConfig")
 public class UserRepositoryImpl implements UserRepository {
 
+	private final Map<String, User> internalUserMap = new HashMap<>();
+	Map<String, User> users;
 	private Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
-	Map<String, User> users;
+	public UserRepositoryImpl() {
+		this.users = new HashMap<>();
+		if (UsersTestConfig.TEST_MODE) {
+			logger.info("TestMode enabled");
+			logger.debug("Initializing users");
+			this.users = UsersTestConfig.initializeInternalUsers();
+			logger.info("Finished initializing users");
 
-	public UserRepositoryImpl(){
-		this.initializeInternalUsers();
+		}
 	}
 
 	@Override
-	public Map<String, User> getAllUsers(){
+	public Map<String, User> getAllUsers() {
 		return users;
 	}
 
 	@Override
 	public Optional<User> getUserByUserName(String userName) throws UserNotFoundException {
 
-		for(String s : users.keySet()) {
-			if(s.equalsIgnoreCase(userName)){
+		for (String s : users.keySet()) {
+			if (s.equalsIgnoreCase(userName)) {
 				return Optional.of(users.get(s));
 			}
 		}
@@ -49,13 +60,13 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public Optional<User> addUser(User user) {
 
-		if(isUserAlreadyRegistered(user)) {
+		if (isUserAlreadyRegistered(user)) {
 			logger.error("User with userName " + user.getUserName() + " already exists");
 			return Optional.empty();
 		} else {
 			User userSaved = new User(UUID.randomUUID(), user.getUserName(), user.getPhoneNumber(), user.getEmailAddress());
 			users.put(userSaved.getUserName(), userSaved);
-//			generateUserLocationHistory(userSaved);
+			//			generateUserLocationHistory(userSaved);
 			return Optional.of(userSaved);
 		}
 	}
@@ -77,7 +88,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 		Map<UUID, Location> currentLocations = new HashMap<>();
 
-		for(User u : users.values()) {
+		for (User u : users.values()) {
 			currentLocations.put(u.getUserId(), u.getLastVisitedLocation().location);
 		}
 		return currentLocations;
@@ -85,7 +96,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	public List<UserReward> getUserRewards(String userName) throws UserNotFoundException {
-		if(this.getUserByUserName(userName).isEmpty()) {
+		if (this.getUserByUserName(userName).isEmpty()) {
 			logger.error("User with userName " + userName + " was not found");
 			throw new UserNotFoundException("User with userName " + userName + " was not found");
 		}
@@ -95,7 +106,7 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
 
-		if(this.getUserByUserName(userName).isEmpty()) {
+		if (this.getUserByUserName(userName).isEmpty()) {
 			logger.error("User with userName " + userName + " was not found");
 			throw new UserNotFoundException("User with userName " + userName + " was not found");
 		}
@@ -108,15 +119,6 @@ public class UserRepositoryImpl implements UserRepository {
 		return user.getUserPreferences();
 	}
 
-
-	/**********************************************************************************
-	 *
-	 * Methods Below: For Internal Testing
-	 *
-	 **********************************************************************************/
-//	private static final String tripPricerApiKey = "test-server-api-key";
-	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
-	private final Map<String, User> internalUserMap = new HashMap<>();
 	private void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
 			String userName = "internalUser" + i;
@@ -133,7 +135,7 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	private void generateUserLocationHistory(User user) {
-		IntStream.range(0, 3).forEach(i-> {
+		IntStream.range(0, 3).forEach(i -> {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
 		});
 	}
@@ -154,7 +156,5 @@ public class UserRepositoryImpl implements UserRepository {
 		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
 		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
-
-
 
 }

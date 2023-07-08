@@ -5,15 +5,13 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.helper.UsersTestConfig;
 import tourGuide.repository.implementation.UserRepositoryImpl;
-import tourGuide.service.RewardsService;
-import tourGuide.service.TourGuideService;
 import tourGuide.service.implementation.RewardsServiceImpl;
 import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
@@ -27,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
+@SpringBootTest
 public class TestPerformance {
 
 	@BeforeAll
@@ -56,12 +55,15 @@ public class TestPerformance {
 	@Test
 	public void highVolumeTrackLocation() {
 
-		int nbOfUsers = 100;
+		int nbOfUsers = 100000;
 
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
 		InternalTestHelper.setInternalUserNumber(nbOfUsers);
+
+		System.out.println(UsersTestConfig.TEST_MODE);
+
 		UserServiceImpl userService = new UserServiceImpl(new UserRepositoryImpl());
 
 		List<User> allUsers = new ArrayList<>(userService.getAllUsers().values());
@@ -111,8 +113,6 @@ public class TestPerformance {
 
 	    Attraction attraction = gpsUtil.getAttractions().get(0);
 		List<User> allUsers = new ArrayList<>(userService.getAllUsers().values());
-
-
 
 		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size() == 0);

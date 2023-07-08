@@ -40,7 +40,7 @@
 //		for(int i = 0 ; i < numberOfThreads ; i ++) {
 //
 //			logger.info("Thread " + i + " will treat users between " + (i*size/numberOfThreads) + " and " + ((i+1)*size/numberOfThreads-1));
-//			executorService.execute(new Worker(this.tourGuideService, users.subList(i*size/numberOfThreads, (i+1)*size/numberOfThreads)));
+//			executorService.execute(new WorkerTracking(this.tourGuideService, users.subList(i*size/numberOfThreads, (i+1)*size/numberOfThreads)));
 //
 //		}
 //

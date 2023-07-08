@@ -9,24 +9,20 @@ import tourGuide.user.User;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Worker extends Thread {
+public class WorkerTracking extends Thread {
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
-	private Logger logger = LoggerFactory.getLogger(Worker.class);
+	private Logger logger = LoggerFactory.getLogger(WorkerTracking.class);
 	private TourGuideServiceImpl tourGuideServiceImpl;
 	private boolean stop = false;
 
 	private List<User> users;
 
-	public Worker(TourGuideServiceImpl tourGuideServiceImpl, List<User> users) {
+	public WorkerTracking(TourGuideServiceImpl tourGuideServiceImpl, List<User> users) {
 		this.tourGuideServiceImpl = tourGuideServiceImpl;
 		this.users = users;
 		logger.debug("new track");
 	}
 
-
-	/**
-	 * Assures to shut down the Tracker thread
-	 */
 	public void stopTracking() {
 		stop = true;
 		this.interrupt();
@@ -45,7 +41,7 @@ public class Worker extends Thread {
 
 			for (User u : users) {
 				tourGuideServiceImpl.trackUserLocation(u);
-				logger.info("trackedUserLocation for user " + u.getUserName());
+//				logger.info("trackedUserLocation for user " + u.getUserName());
 			}
 			//			users.forEach(u -> tourGuideServiceImpl.trackUserLocation(u));
 

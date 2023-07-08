@@ -9,7 +9,9 @@ import tourGuide.dto.NearByAttractionDto;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.GpsRepositoryImpl;
 import tourGuide.service.GpsService;
+import tourGuide.service.RewardsService;
 import tourGuide.service.UserService;
+import tourGuide.user.User;
 
 import java.util.*;
 
@@ -26,10 +28,13 @@ public class GpsServiceImpl implements GpsService {
 
 	private UserService userService;
 
-	public GpsServiceImpl(GpsRepositoryImpl gpsRepository, UserService userService, TourGuideServiceImpl tourGuideService) {
+	private RewardsService rewardsService;
+
+	public GpsServiceImpl(GpsRepositoryImpl gpsRepository, UserService userService, TourGuideServiceImpl tourGuideService, RewardsServiceImpl rewardsService) {
 		this.gpsRepository = gpsRepository;
 		this.userService = userService;
 		this.tourGuideService = tourGuideService;
+		this.rewardsService = rewardsService;
 	}
 
 	@Override
@@ -69,9 +74,11 @@ public class GpsServiceImpl implements GpsService {
 				dto.setUserLatitude(userLatitude);
 				dto.setUserLongitude(userLongitude);
 				dto.setDistanceBetween(distance);
-				nearByAttractions.add(dto);
 
-				// Reward Points à ajouter
+				// Revoir reward Points...
+				dto.setRewardPoints(rewardsService.getRewardPoints(sortedAttractions.get(distance), userService.getUserByUserName(userName).get()));
+
+				nearByAttractions.add(dto);
 
 				numberOfAttractions--;
 			}

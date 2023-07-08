@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
+import tourGuide.service.RewardsService;
 import tourGuide.service.implementation.RewardsServiceImpl;
 
 @Configuration
@@ -16,7 +17,7 @@ public class TourGuideModule {
 	}
 	
 	@Bean
-	public RewardsServiceImpl getRewardsService() {
+	public RewardsService getRewardsService() {
 		return new RewardsServiceImpl(getGpsUtil(), getRewardCentral());
 	}
 	

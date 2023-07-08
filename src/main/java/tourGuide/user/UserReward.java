@@ -28,8 +28,6 @@ public class UserReward {
 		return rewardPoints;
 	}
 
-	// Added for tests
-
 	public VisitedLocation getVisitedLocation() {
 		return visitedLocation;
 	}

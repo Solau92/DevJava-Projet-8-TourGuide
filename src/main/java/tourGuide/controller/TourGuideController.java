@@ -16,6 +16,7 @@ import tourGuide.dto.NearByAttractionDto;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.service.implementation.GpsServiceImpl;
+import tourGuide.service.implementation.RewardsServiceImpl;
 import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
 import tourGuide.user.User;
@@ -33,10 +34,13 @@ public class TourGuideController {
 
 	private GpsServiceImpl gpsService;
 
-	public TourGuideController(TourGuideServiceImpl tourGuideService, UserServiceImpl userService, GpsServiceImpl gpsService) {
+	private RewardsServiceImpl rewardsService;
+
+	public TourGuideController(TourGuideServiceImpl tourGuideService, UserServiceImpl userService, GpsServiceImpl gpsService, RewardsServiceImpl rewardsService) {
 		this.userService = userService;
 		this.tourGuideService = tourGuideService;
 		this.gpsService = gpsService;
+		this.rewardsService = rewardsService;
 	}
 
 	@RequestMapping("/")
@@ -49,11 +53,9 @@ public class TourGuideController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getUserLocation(userName));
 	}
 
-	//  TodoNearlyDone : reward points
-	//  Note: Attraction reward points can be gathered from RewardsCentral
 	@RequestMapping("/getNearbyAttractions")
 	public ResponseEntity<List<NearByAttractionDto>> getNearbyAttractions(@RequestParam String userName) throws UserNotFoundException {
-		// A mettre dans TourGuideService ?? gpsService ? UserService ??
+		// A mettre dans TourGuideService ?? gpsService ?
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getNearbyAttractions(userName));
 	}
 
@@ -65,12 +67,20 @@ public class TourGuideController {
 
 	@RequestMapping("/getRewards")
 	public ResponseEntity<List<UserReward>> getRewards(@RequestParam String userName) throws UserNotFoundException {
-		// A mettre dans TourGuideService ?? gpsService ? UserService ??
+		// A mettre où ?
+		// Laisser dans userService si juste pour retourner, mettre dans tourGuide ou reward Service si doit calculer d'abord
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getUserRewards(userName));
 	}
 
-	@RequestMapping("/getAllCurrentLocations") // En fait : lastVisitedLocation...
+	@RequestMapping("/getAllCurrentLocations")
+	// En fait : lastVisitedLocation...
 	public ResponseEntity<Map<UUID, Location>> getAllCurrentLocations() throws UserNotFoundException {
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
+	}
+
+	@RequestMapping("/trackAllUsersLocation")
+	public ResponseEntity<Map<UUID, Location>> trackAllUsersLocation() throws UserNotFoundException {
+		tourGuideService.trackAllUsersLocationOnce();
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
 	}
 
@@ -78,7 +88,7 @@ public class TourGuideController {
 	public ResponseEntity<List<Provider>> getTripDeals(@RequestParam String userName) throws UserNotFoundException {
 		// TODO : à modifier, car doit non seulement renvoyer, mais avant calculer...
 //		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getTripDeals(userName));
-		// Voir si je laisse dans tourGuide ou si User Service ?
+		// Laisser dans userService si juste pour retourner, mettre dans tourGuide Service si doit calculer d'abord
 		// Et voir si user ou userName en paramètre ?
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getTripDeals(userService.getUserByUserName(userName).get()));
 	}

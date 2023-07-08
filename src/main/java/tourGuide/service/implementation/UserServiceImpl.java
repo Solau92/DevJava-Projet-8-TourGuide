@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	private UserRepositoryImpl userRepository;
 
-	public UserServiceImpl(UserRepositoryImpl userRepository/*, TourGuideService tourGuideService*/) {
+	public UserServiceImpl(UserRepositoryImpl userRepository) {
 		this.userRepository = userRepository;
 	}
 
@@ -71,12 +71,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserReward> getUserRewards(String userName) throws UserNotFoundException {
+		// TODO : revoir (juste renvoi ou calcul aussi ?)
 		return userRepository.getUserRewards(userName);
 	}
 
 	@Override
 	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
-		// TODO : revoir (V. controlleur)
+		// TODO : revoir (juste renvoi ou calcul aussi ?)
 		return userRepository.getTripDeals(userName);
 	}
 

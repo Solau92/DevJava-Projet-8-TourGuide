@@ -18,6 +18,7 @@ public class User {
 	private List<UserReward> userRewards = new ArrayList<>();
 	private UserPreferences userPreferences = new UserPreferences();
 	private List<Provider> tripDeals = new ArrayList<>();
+
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {
 		this.userId = userId;
 		this.userName = userName;
@@ -75,6 +76,7 @@ public class User {
 
 		if(userRewards.stream().filter(r -> r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
 
+			// TODO : à supprimer
 		// userRewards.stream().filter :
 		//        liste des rewards de l'utilisateur
 		// .filter(r -> !r.attraction.attractionName.equals(userReward.attraction)) :
