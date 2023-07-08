@@ -64,6 +64,7 @@ public class RewardsServiceImpl implements RewardsService {
 				for (Attraction attraction : attractions) {
 					if (user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
 						if (nearAttraction(visitedLocation, attraction)) {
+							logger.info("add Reward to user " + user.getUserName() + " (reward points not calculated");
 							user.addUserReward(new UserReward(visitedLocation, attraction, -1));
 							rewardedUsers.add(user);
 						}
@@ -72,7 +73,7 @@ public class RewardsServiceImpl implements RewardsService {
 			}
 		}
 
-		logger.info("rewardedUser size : " + rewardedUsers.size());
+		logger.info("Number of rewarde dUsers : " + rewardedUsers.size());
 
 		///////////////////// Découper ma liste et lancer les threads
 
@@ -80,14 +81,15 @@ public class RewardsServiceImpl implements RewardsService {
 
 		List<WorkerRewards> tasks = new ArrayList<>();
 
-		int activeNoOfThreads = Math.min(NUMBER_OF_THREADS, users.size());
+		int activeNumberOfThreads = Math.min(NUMBER_OF_THREADS, users.size());
+		logger.info("number of threads : " + NUMBER_OF_THREADS + "real number of threads : " + activeNumberOfThreads);
 
-		int bucketSize = users.size() / activeNoOfThreads;
+		int bucketSize = users.size() / activeNumberOfThreads;
 
-		for (int i = 0; i < activeNoOfThreads; i++) {
+		for (int i = 0; i < activeNumberOfThreads; i++) {
 			int from = i * bucketSize;
 			int to = (i + 1) * bucketSize;
-			if (i == activeNoOfThreads - 1 || to > rewardedUsers.size()) {
+			if (i == activeNumberOfThreads - 1 || to > rewardedUsers.size()) {
 				to = rewardedUsers.size();
 			}
 			logger.info("Thread " + (i+1) + " will treat users between " + from + " and " + (to - 1));
@@ -115,29 +117,21 @@ public class RewardsServiceImpl implements RewardsService {
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
 
-//		logger.info(String.valueOf(user.getUserRewards().size()));
-
 		for(VisitedLocation visitedLocation : userLocations) {
-//			logger.info("visited location : " + visitedLocation.location.latitude + " " + visitedLocation.location.longitude);
 			for(Attraction attraction : attractions) {
-//				logger.info(attraction.attractionName);
 				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-//					logger.info("user jamais allé dans attraction");
 					if(nearAttraction(visitedLocation, attraction)) {
-//						logger.info("visited location near attraction --> calculate reward");
 						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
-//						logger.info("size après add reward : " + String.valueOf(user.getUserRewards().size()));
 					}
 				}
 			}
 		}
-//		logger.info("size à la fin : " + String.valueOf(user.getUserRewards().size()));
 	}
 	
 
-	private boolean isWithinAttractionProximity(Attraction attraction, Location location) {
-		return getDistance(attraction, location) > attractionProximityRange ? false : true;
-	}
+//	private boolean isWithinAttractionProximity(Attraction attraction, Location location) {
+//		return getDistance(attraction, location) > attractionProximityRange ? false : true;
+//	}
 	
 	private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;

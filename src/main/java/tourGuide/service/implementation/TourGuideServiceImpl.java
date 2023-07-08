@@ -138,9 +138,7 @@ public class TourGuideServiceImpl implements TourGuideService {
 	@Override
 	public VisitedLocation trackUserLocation(User user) {
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-		logger.info("size before : " + user.getVisitedLocations().size());
 		user.addToVisitedLocations(visitedLocation);
-		logger.info("size after : " + user.getVisitedLocations().size());
 		rewardsService.calculateRewards(user);
 		return visitedLocation;
 	}
@@ -154,7 +152,6 @@ public class TourGuideServiceImpl implements TourGuideService {
 		List<Provider> providers = tripPricer.getPrice(this.tripPricerApiKey, user.getUserId(), tripDealsPrefDto.getNumberOfAdults(),
 				tripDealsPrefDto.getNumberOfChildren(), tripDealsPrefDto.getTripDuration(), cumulativeRewardPoints);
 		user.setTripDeals(providers);
-		logger.info("Trip duration : " + tripDealsPrefDto.getTripDuration() + ", nb adults : " + tripDealsPrefDto.getNumberOfAdults() + ", nb children : " + tripDealsPrefDto.getNumberOfChildren());
 		return providers;
 	}
 

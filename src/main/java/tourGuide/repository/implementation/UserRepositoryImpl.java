@@ -73,6 +73,7 @@ public class UserRepositoryImpl implements UserRepository {
 		if (user.getVisitedLocations().size() > 0) {
 			return Optional.of(user.getLastVisitedLocation().location);
 		}
+		logger.info("User location not found for user " + user.getUserName());
 		return Optional.empty();
 	}
 

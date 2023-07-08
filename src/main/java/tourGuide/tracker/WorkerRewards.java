@@ -1,5 +1,6 @@
 package tourGuide.tracker;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tourGuide.service.implementation.RewardsServiceImpl;
@@ -31,11 +32,10 @@ public class WorkerRewards extends Thread {
 	@Override
 	public void run() {
 
-/*		while (true) {*/
-//			StopWatch stopWatch = new StopWatch();
+			StopWatch stopWatch = new StopWatch();
 
 			logger.info("Begin calculating rewards for " + users.size() + " users.");
-//			stopWatch.start();
+			stopWatch.start();
 
 			logger.info("Thread name :" + Thread.currentThread().getName());
 
@@ -48,21 +48,8 @@ public class WorkerRewards extends Thread {
 				}
 			}
 
-//			stopWatch.stop();
-//			logger.info("Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
+			stopWatch.stop();
+			logger.info("Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 
-/*			if (Thread.currentThread().isInterrupted() || stop) {
-				logger.debug("Stopping");
-				break;
-			}
-
-			try {
-				logger.debug("Sleeping");
-				TimeUnit.SECONDS.sleep(trackingPollingInterval);
-			} catch (InterruptedException e) {
-				break;
-			}*/
-
-	//	}
 	}
 }

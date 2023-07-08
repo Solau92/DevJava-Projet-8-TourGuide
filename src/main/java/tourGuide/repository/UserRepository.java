@@ -1,6 +1,7 @@
 package tourGuide.repository;
 
 import gpsUtil.location.Location;
+import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.user.User;
 import tourGuide.user.UserPreferences;
@@ -18,7 +19,7 @@ public interface UserRepository {
 
 	Optional<User> getUserByUserName(String userName) throws UserNotFoundException;
 
-	Optional<User> addUser(User user) throws Exception;
+	Optional<User> addUser(User user) throws UserAlreadyExistsException;
 
 	Optional<Location> getUserLocation(User user);
 

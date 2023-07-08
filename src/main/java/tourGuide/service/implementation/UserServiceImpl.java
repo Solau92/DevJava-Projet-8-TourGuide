@@ -9,7 +9,6 @@ import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.UserRepositoryImpl;
 import tourGuide.service.UserService;
 import tourGuide.user.User;
-import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
@@ -34,6 +33,7 @@ public class UserServiceImpl implements UserService {
 	public Optional<User> getUserByUserName(String userName) throws UserNotFoundException {
 
 		if (userRepository.getUserByUserName(userName).isEmpty()) {
+			logger.error("User with userName " + userName + " was not found");
 			throw new UserNotFoundException("User with userName " + userName + " was not found");
 		} else {
 			return userRepository.getUserByUserName(userName);
@@ -61,6 +61,7 @@ public class UserServiceImpl implements UserService {
 		if (!userLocation.isEmpty()) {
 			return userLocation;
 		}
+		logger.info("User location not found");
 		return Optional.empty();
 	}
 

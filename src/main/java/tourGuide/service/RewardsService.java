@@ -1,8 +1,6 @@
 package tourGuide.service;
 
 import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
 import tourGuide.user.User;
 
 import java.util.List;

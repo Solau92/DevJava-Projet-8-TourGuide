@@ -41,10 +41,7 @@ public class WorkerTracking extends Thread {
 
 			for (User u : users) {
 				tourGuideServiceImpl.trackUserLocation(u);
-//				logger.info("trackedUserLocation for user " + u.getUserName());
 			}
-			//			users.forEach(u -> tourGuideServiceImpl.trackUserLocation(u));
-
 
 			stopWatch.stop();
 			logger.info("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");

@@ -1,4 +1,4 @@
-package tourGuide;
+package tourGuide.performance;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
