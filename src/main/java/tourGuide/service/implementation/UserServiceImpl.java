@@ -52,17 +52,17 @@ public class UserServiceImpl implements UserService {
 		return optionalUser;
 	}
 
-		@Override
-		public Optional<Location> getUserLocation(String userName) throws UserNotFoundException {
+	@Override
+	public Optional<Location> getUserLocation(String userName) throws UserNotFoundException {
 
-			User user = this.getUserByUserName(userName).get();
-			Optional<Location> userLocation = userRepository.getUserLocation(user);
+		User user = this.getUserByUserName(userName).get();
+		Optional<Location> userLocation = userRepository.getUserLocation(user);
 
-			if (!userLocation.isEmpty()) {
-				return userLocation;
-			}
-			return Optional.empty();
+		if (!userLocation.isEmpty()) {
+			return userLocation;
 		}
+		return Optional.empty();
+	}
 
 	@Override
 	public Map<UUID, Location> getAllCurrentLocations() {
@@ -71,19 +71,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserReward> getUserRewards(String userName) throws UserNotFoundException {
-		// TODO : revoir (juste renvoi ou calcul aussi ?)
 		return userRepository.getUserRewards(userName);
 	}
 
 	@Override
 	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
-		// TODO : revoir (juste renvoi ou calcul aussi ?)
 		return userRepository.getTripDeals(userName);
-	}
-
-	@Override
-	public UserPreferences setUserPreferences(User user, UserPreferences userPreferences) throws UserNotFoundException {
-		return userRepository.setUserPreferences(user, userPreferences);
 	}
 
 }

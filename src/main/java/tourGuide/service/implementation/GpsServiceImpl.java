@@ -11,7 +11,6 @@ import tourGuide.repository.implementation.GpsRepositoryImpl;
 import tourGuide.service.GpsService;
 import tourGuide.service.RewardsService;
 import tourGuide.service.UserService;
-import tourGuide.user.User;
 
 import java.util.*;
 
@@ -42,7 +41,6 @@ public class GpsServiceImpl implements GpsService {
 		return gpsRepository.getAllAttractions();
 	}
 
-	// Voir si doit rester ici...
 	@Override
 	public List<NearByAttractionDto> getNearbyAttractions(String userName) throws UserNotFoundException {
 
@@ -74,15 +72,12 @@ public class GpsServiceImpl implements GpsService {
 				dto.setUserLatitude(userLatitude);
 				dto.setUserLongitude(userLongitude);
 				dto.setDistanceBetween(distance);
-
-				// Revoir reward Points...
 				dto.setRewardPoints(rewardsService.getRewardPoints(sortedAttractions.get(distance), userService.getUserByUserName(userName).get()));
 
 				nearByAttractions.add(dto);
 
 				numberOfAttractions--;
 			}
-			// Arrêter le parcours ?
 		}
 
 		return nearByAttractions;
@@ -90,7 +85,6 @@ public class GpsServiceImpl implements GpsService {
 
 	private double distanceBetweenTwoPoints(Location userLocation, Location attractionLocation) {
 
-		// Pris dans RewardService : mieux ici ? doublon ? à voir TODO
 		double lat1 = Math.toRadians(userLocation.latitude);
 		double lon1 = Math.toRadians(userLocation.longitude);
 		double lat2 = Math.toRadians(attractionLocation.latitude);

@@ -48,8 +48,8 @@ public class TourGuideControllerTest {
 	List<Attraction> attractions;
 	List<NearByAttractionDto> attractionsDto = new ArrayList<>();
 	User user1;
-
 	Map<UUID, Location> currentLocations;
+	Map<String, User> users;
 
 	void setUpAttractions() {
 
@@ -105,6 +105,11 @@ public class TourGuideControllerTest {
 		currentLocations.put(user1.getUserId(), location1);
 		currentLocations.put(user2.getUserId(), location2);
 		currentLocations.put(user3.getUserId(), location3);
+
+		users = new HashMap<>();
+		users.put(user1.getUserName(), user1);
+		users.put(user2.getUserName(), user2);
+		users.put(user3.getUserName(), user3);
 	}
 
 	@Test
@@ -188,8 +193,7 @@ public class TourGuideControllerTest {
 
 		// GIVEN
 		setUpUsers();
-		when(userRepository.getAllCurrentLocations()).thenReturn(currentLocations);
-		when(userService.getAllCurrentLocations()).thenReturn(currentLocations);
+		when(tourGuideService.getAllCurrentLocations()).thenReturn(currentLocations);
 
 		// WHEN
 		ResponseEntity<Map<UUID, Location>> responseResult = tourGuideController.getAllCurrentLocations();
@@ -200,6 +204,31 @@ public class TourGuideControllerTest {
 		assertEquals(3, listResult.size());
 		assertEquals(0.5, listResult.get(user1.getUserId()).latitude);
 		assertEquals(ACCEPTED, statusResponse);
+	}
+
+	@Test
+	void trackAllUsersLocation_Ok_Test() throws UserNotFoundException {
+
+		// GIVEN
+		setUpUsers();
+
+		when(userService.getAllUsers()).thenReturn(users);
+
+		when(tourGuideService.getAllCurrentLocations()).thenReturn(currentLocations);
+
+
+		// WHEN
+		ResponseEntity<Map<UUID, Location>> responseResult = tourGuideController.trackAllUsersLocation();
+		Map<UUID, Location> listResult = responseResult.getBody();
+		HttpStatusCode statusResponse = responseResult.getStatusCode();
+
+		// THEN
+		assertEquals(3, listResult.size());
+		assertEquals(4, listResult.get(user1.getVisitedLocations().size()));
+		assertEquals(0.5, listResult.get(user1.getUserId()).latitude);
+		assertEquals(ACCEPTED, statusResponse);
+
+
 	}
 
 	@Disabled

@@ -13,6 +13,7 @@ import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.GpsRepositoryImpl;
 import tourGuide.repository.implementation.UserRepositoryImpl;
 import tourGuide.service.implementation.GpsServiceImpl;
+import tourGuide.service.implementation.RewardsServiceImpl;
 import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
 import tourGuide.user.User;
@@ -23,32 +24,28 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class GpsServiceTest {
 
+	List<Attraction> attractions;
+	User user1;
+	Location location1;
 	@InjectMocks
 	private GpsServiceImpl gpsService;
-
 	@Mock
 	private GpsRepositoryImpl gpsRepository;
-
 	@Mock
 	private UserServiceImpl userService;
-
 	@Mock
 	private UserRepositoryImpl userRepository;
-
 	@Mock
 	private TourGuideServiceImpl tourGuideService;
-
-	List<Attraction> attractions;
-
-	User user1;
-
-	Location location1;
+	@Mock
+	private RewardsServiceImpl rewardsService;
 
 	@BeforeEach
 	void setUp() {
@@ -93,8 +90,8 @@ class GpsServiceTest {
 		when(userRepository.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
 		when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
 		when(tourGuideService.getUserLocation(anyString())).thenReturn(location1);
-
 		when(gpsRepository.getAllAttractions()).thenReturn(attractions);
+		when(rewardsService.getRewardPoints(any(Attraction.class), any(User.class))).thenReturn(10);
 
 		// WHEN
 		List<NearByAttractionDto> nearByAttractions = gpsService.getNearbyAttractions("userName1");

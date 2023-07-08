@@ -13,11 +13,8 @@ import java.util.List;
 @Repository
 public class GpsRepositoryImpl implements GpsRepository {
 
-	private Logger logger = LoggerFactory.getLogger(GpsRepositoryImpl.class);
-
-	private GpsUtil gpsUtil;
-
 	List<Attraction> attractions;
+	private GpsUtil gpsUtil;
 
 	public GpsRepositoryImpl(GpsUtil gpsUtil) {
 		this.attractions = new ArrayList<>();

@@ -5,7 +5,6 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,6 +15,7 @@ import tourGuide.repository.implementation.UserRepositoryImpl;
 import tourGuide.service.implementation.UserServiceImpl;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
+import tripPricer.Provider;
 
 import java.util.*;
 
@@ -27,16 +27,13 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 class UserServiceTest {
 
-	// TODO : revoir setUp quand classe terminée
-
+	User user1;
+	User user2;
 	@InjectMocks
 	private UserServiceImpl userService;
 	@Mock
 	private UserRepositoryImpl userRepository;
 	private Map<String, User> users = new HashMap<>();
-
-	User user1;
-	User user2;
 
 	@BeforeEach
 	public void setUp() {
@@ -45,15 +42,6 @@ class UserServiceTest {
 		users.put(user1.getUserName(), user1);
 		users.put(user2.getUserName(), user2);
 	}
-
-//	Map<UUID, Location> setUpLocation(){
-//		Location location1 = new Location(0.50, 0.60);
-//		Location location2 = new Location(0.55, 0.66);
-//		Map<UUID, Location> locations = new HashMap<>();
-//		locations.put(UUID.randomUUID(), location1);
-//		locations.put(UUID.randomUUID(), location2);
-//		return locations;
-//	}
 
 	@AfterEach
 	public void tearDown() {
@@ -119,7 +107,7 @@ class UserServiceTest {
 
 		// WHEN
 		// THEN
-		assertThrows(UserAlreadyExistsException.class, ()-> userService.addUser(user1));
+		assertThrows(UserAlreadyExistsException.class, () -> userService.addUser(user1));
 	}
 
 	@Test
@@ -173,7 +161,6 @@ class UserServiceTest {
 	@Test
 	void getUserRewards_Ok_Test() throws UserNotFoundException {
 
-		// TODO
 		// GIVEN
 		Location location1 = new Location(0.50, 0.60);
 		VisitedLocation visitedLocation1 = new VisitedLocation(UUID.randomUUID(), location1, new Date());
@@ -212,17 +199,25 @@ class UserServiceTest {
 		assertThrows(UserNotFoundException.class, () -> userService.getUserRewards("userNotFound"));
 	}
 
-	@Disabled
 	@Test
-	void getTripDeas_Ok_Test() {
+	void getTripDeals_Ok_Test() throws UserNotFoundException {
 
-		// TODO
 		// GIVEN
 
+		Provider tripDeal1 = new Provider(UUID.randomUUID(), "name1", 100);
+		Provider tripDeal2 = new Provider(UUID.randomUUID(), "name2", 200);
+		List<Provider> tripDeals = new ArrayList<>();
+		tripDeals.add(tripDeal1);
+		tripDeals.add(tripDeal2);
+
+		when(userRepository.getTripDeals(anyString())).thenReturn(tripDeals);
+
 		// WHEN
+		List<Provider> tripDealsFound = userService.getTripDeals("userName1");
 
 		// THEN
-		fail("not yet implemented");
+		assertEquals(2, tripDealsFound.size());
+		assertTrue(tripDealsFound.contains(tripDeal2));
 
 	}
 

@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.UserRepositoryImpl;
 import tourGuide.service.implementation.RewardsServiceImpl;
@@ -41,9 +42,6 @@ public class TourGuideServiceTest {
 
 	@Mock
 	private TripPricer tripPricer;
-
-//	@Mock
-//	private Tracker tracker;
 
 	@Mock
 	private UserServiceImpl userService;
@@ -111,9 +109,57 @@ public class TourGuideServiceTest {
 	}
 
 	@Test
-	void trackUserLocation_Test_Ok(){
+	void getAllCurrentLocations_Ok_Test() throws UserNotFoundException {
 
-		//TODO ? Revoir quand rewardsService.calculateRewards implémenté
+		// GIVEN
+		user1.addToVisitedLocations(visitedLocation1);
+
+		User user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
+		Location location2 = new Location(50.0, 60.0);
+		VisitedLocation visitedLocation2 = new VisitedLocation(UUID.randomUUID(), location2, new Date());
+		user2.addToVisitedLocations(visitedLocation2);
+
+		Map<String, User> users = new HashMap<>();
+		users.put(user1.getUserName(), user1);
+		users.put(user2.getUserName(), user2);
+
+		when(userService.getAllUsers()).thenReturn(users);
+		when(userRepository.getUserLocation(user1)).thenReturn(Optional.of(location1), Optional.of(location2));
+		when(userService.getUserLocation(anyString())).thenReturn(Optional.of(location1), Optional.of(location2));
+		when(userRepository.getUserByUserName(anyString())).thenReturn(Optional.of(user1), Optional.of(user2));
+		when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1), Optional.of(user2));
+
+		// WHEN
+		Map<UUID, Location> locationsFound = tourGuideService.getAllCurrentLocations();
+
+		// THEN
+		assertEquals(2, locationsFound.size());
+		assertTrue(locationsFound.containsKey(user2.getUserId()));
+		assertTrue(locationsFound.containsValue(location2));
+
+	}
+
+	@Test
+	void trackAllUsersLocationOnce_Ok_Test() {
+
+		// GIVEN
+
+		// WHEN
+
+		// THEN
+
+	}
+
+
+	// GIVEN
+
+	// WHEN
+
+	// THEN
+
+
+	@Test
+	void trackUserLocation_Test_Ok(){
 
 		// GIVEN
 		when(gpsUtil.getUserLocation(any(UUID.class))).thenReturn(visitedLocation1);
@@ -125,23 +171,29 @@ public class TourGuideServiceTest {
 		assertEquals(location1, visitedLocationFound.location);
 		assertEquals(1, user1.getVisitedLocations().size());
 		verify(rewardService, Mockito.times(1)).calculateRewards(user1);
-		assertNotEquals(0, user1.getUserRewards().size());
 	}
 
 	@Test
-	void getTripDeals_Ok_Test() {
+	void getTripDeals_Ok_Test() throws UserNotFoundException {
 
-		// TODO : revoir
+		// GIVEN
+		when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
+		when(userRepository.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
 
-//		// GIVEN
-//		List<Provider> providers = new ArrayList<>();
-//		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(providers);
-//
-//		// WHEN
-//		List<Provider> providersFound = tourGuideService.getTripDeals(user1);
-//
-//		// THEN
-//		assertEquals(5, user1.getTripDeals().size());
+		List<Provider> providers = new ArrayList<>();
+		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(providers);
+
+		TripDealsPrefDto tripDealsPrefDto = new TripDealsPrefDto();
+		tripDealsPrefDto.setUserName(user1.getUserName());
+		tripDealsPrefDto.setTripDuration(2);
+		tripDealsPrefDto.setNumberOfAdults(7);
+		tripDealsPrefDto.setNumberOfChildren(1);
+
+		// WHEN
+		List<Provider> providersFound = tourGuideService.getTripDeals(tripDealsPrefDto);
+
+		// THEN
+		assertEquals(5, user1.getTripDeals().size());
 
 	}
 

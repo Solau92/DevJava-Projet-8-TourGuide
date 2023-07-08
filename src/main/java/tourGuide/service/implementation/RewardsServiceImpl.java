@@ -134,24 +134,22 @@ public class RewardsServiceImpl implements RewardsService {
 //		logger.info("size à la fin : " + String.valueOf(user.getUserRewards().size()));
 	}
 	
-	@Override
-	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
+
+	private boolean isWithinAttractionProximity(Attraction attraction, Location location) {
 		return getDistance(attraction, location) > attractionProximityRange ? false : true;
 	}
 	
-	@Override
-	public boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
+	private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	
 	@Override
 	public int getRewardPoints(Attraction attraction, User user) {
-//		logger.info("getRewardPoints for attraction " + attraction + " and user " + user.getUserName());
 		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 	
-	@Override
-	public double getDistance(Location loc1, Location loc2) {
+
+	private double getDistance(Location loc1, Location loc2) {
         double lat1 = Math.toRadians(loc1.latitude);
         double lon1 = Math.toRadians(loc1.longitude);
         double lat2 = Math.toRadians(loc2.latitude);

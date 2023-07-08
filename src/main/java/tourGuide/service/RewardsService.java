@@ -16,11 +16,6 @@ public interface RewardsService {
 
 	void calculateRewards(User user);
 
-	boolean isWithinAttractionProximity(Attraction attraction, Location location);
-
-	boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction);
-
 	int getRewardPoints(Attraction attraction, User user);
 
-	double getDistance(Location loc1, Location loc2);
 }

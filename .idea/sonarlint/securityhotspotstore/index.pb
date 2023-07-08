@@ -1,12 +1,6 @@
 
-x
-Hsrc/main/java/tourGuide/repository/implementation/GpsRepositoryImpl.java,e\2\e292dc8ce2ee2181531511308dc2857686d15c9c
 X
 (gradle/wrapper/gradle-wrapper.properties,f\b\fbe448ebfc3eb2d4e308f6b8b043666f5b57235e
-e
-5src/main/java/tourGuide/repository/GpsRepository.java,7\6\76ec6e97e67c4d9d810c444abd27c835eb0bb8da
-_
-/src/main/java/tourGuide/service/GpsService.java,6\3\632ceb5b73455106e60b97a8504bcf0b91922b6b
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
@@ -14,35 +8,15 @@ l
 <src/main/java/tourGuide/exception/UserNotFoundException.java,5\3\5389a12fe6582da97e2853c6cd5b751c30018f16
 q
 Asrc/main/java/tourGuide/exception/UserAlreadyExistsException.java,a\9\a98e98e037167443e6ffe862c6b7417fe139d3bf
-i
-9src/test/java/tourGuide/repository/GpsRepositoryTest.java,2\5\25e9973ea7ee7734bee84cff0e5e9ed3284025dd
-d
-4src/test/java/tourGuide/service/UserServiceTest.java,d\c\dcd9cb5da1bc1c4d381972e6441b1a900239f24d
-c
-3src/test/java/tourGuide/service/GpsServiceTest.java,b\7\b72a17680590c003b0fa85ff39d07c0b8ed9cbc1
-j
-:src/test/java/tourGuide/repository/UserRepositoryTest.java,3\9\396bc934e0cd045fe11dbe97bd1979f88533fffe
-f
-6src/test/java/tourGuide/service/RewardServiceTest.java,6\7\6748640672ce6f4fffd0f2c3509a3e598df9c6b0
-e
-5src/main/java/tourGuide/service/TourGuideService.java,5\6\5627c8e2dfada053c560a4de74da2b6bf0d7fe35
-o
-?src/test/java/tourGuide/controller/TourGuideControllerTest.java,4\0\406b5103f246e89008dc7d81b47811b0fc185772
 \
 ,src/main/java/tourGuide/tracker/Tracker.java,8\0\80fc86ba24afd210d494b8c565433ca0e9d883bf
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
-<
-build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 ;
 gradlew.bat,2\a\2a45a911a8f1836b0b6c5b758962572012d8f8c3
 7
 gradlew,5\b\5bbfa66edb4db3c7c33c5181f43510990d3307f9
 Y
 )src/main/resources/application.properties,0\6\06f65155ec73600b9fc5c4dc2883d4bb84d8e284
-`
-0src/main/java/tourGuide/service/UserService.java,2\9\29bfc6f1ed684b93380b0026ef8fcb9c12ab19b0
-c
-3src/main/java/tourGuide/service/RewardsService.java,6\b\6b4462b986bbafe1fde4efb166bf7e674a7c6f0a
 \
 ,src/main/java/tourGuide/tracker/Worker2.java,e\7\e7615d9381fbabedce304d375aee21570abe1fc8

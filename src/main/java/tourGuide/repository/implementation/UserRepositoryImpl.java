@@ -1,14 +1,11 @@
 package tourGuide.repository.implementation;
 
 import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 import tourGuide.exception.UserNotFoundException;
-import tourGuide.helper.InternalTestHelper;
-//import tourGuide.helper.UsersTestConfig;
 import tourGuide.helper.UsersTestConfig;
 import tourGuide.repository.UserRepository;
 import tourGuide.user.User;
@@ -16,18 +13,15 @@ import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.*;
-import java.util.stream.IntStream;
 
 @Repository
 @DependsOn("usersTestConfig")
 public class UserRepositoryImpl implements UserRepository {
 
 	private final Map<String, User> internalUserMap = new HashMap<>();
-	Map<String, User> users;
 	private Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
+	private Map<String, User> users;
 
 	public UserRepositoryImpl() {
 		this.users = new HashMap<>();
@@ -63,24 +57,23 @@ public class UserRepositoryImpl implements UserRepository {
 		if (isUserAlreadyRegistered(user)) {
 			logger.error("User with userName " + user.getUserName() + " already exists");
 			return Optional.empty();
-		} else {
-			User userSaved = new User(UUID.randomUUID(), user.getUserName(), user.getPhoneNumber(), user.getEmailAddress());
-			users.put(userSaved.getUserName(), userSaved);
-			//			generateUserLocationHistory(userSaved);
-			return Optional.of(userSaved);
 		}
+		User userSaved = new User(UUID.randomUUID(), user.getUserName(), user.getPhoneNumber(), user.getEmailAddress());
+		users.put(userSaved.getUserName(), userSaved);
+		return Optional.of(userSaved);
 	}
 
 	private boolean isUserAlreadyRegistered(User user) {
-
 		return users.containsKey(user.getUserName());
-
 	}
 
 	@Override
 	public Optional<Location> getUserLocation(User user) {
-		return (user.getVisitedLocations().size() > 0) ?
-				Optional.of(user.getLastVisitedLocation().location) : Optional.empty();
+
+		if (user.getVisitedLocations().size() > 0) {
+			return Optional.of(user.getLastVisitedLocation().location);
+		}
+		return Optional.empty();
 	}
 
 	@Override
@@ -117,44 +110,6 @@ public class UserRepositoryImpl implements UserRepository {
 	public UserPreferences setUserPreferences(User user, UserPreferences userPreferences) {
 		user.setUserPreferences(userPreferences);
 		return user.getUserPreferences();
-	}
-
-	private void initializeInternalUsers() {
-		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
-			String userName = "internalUser" + i;
-			String phone = "000";
-			String email = userName + "@tourGuide.com";
-			User user = new User(UUID.randomUUID(), userName, phone, email);
-			generateUserLocationHistory(user);
-
-			internalUserMap.put(userName, user);
-		});
-		logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal test users.");
-
-		this.users = internalUserMap;
-	}
-
-	private void generateUserLocationHistory(User user) {
-		IntStream.range(0, 3).forEach(i -> {
-			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
-		});
-	}
-
-	private double generateRandomLongitude() {
-		double leftLimit = -180;
-		double rightLimit = 180;
-		return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
-	}
-
-	private double generateRandomLatitude() {
-		double leftLimit = -85.05112878;
-		double rightLimit = 85.05112878;
-		return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
-	}
-
-	private Date getRandomTime() {
-		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
-		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
 
 }
