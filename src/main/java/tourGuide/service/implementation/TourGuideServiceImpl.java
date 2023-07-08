@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.VisitedLocation;
+import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.service.TourGuideService;
 import tourGuide.tracker.WorkerTracking;
@@ -148,12 +149,15 @@ public class TourGuideServiceImpl implements TourGuideService {
 		return visitedLocation;
 	}
 
-	public List<Provider> getTripDeals(User user) {
+	public List<Provider> getTripDeals(TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
+
+		User user = userService.getUserByUserName(tripDealsPrefDto.getUserName()).get();
 
 		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		List<Provider> providers = tripPricer.getPrice(this.tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
-				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
+		List<Provider> providers = tripPricer.getPrice(this.tripPricerApiKey, user.getUserId(), tripDealsPrefDto.getNumberOfAdults(),
+				tripDealsPrefDto.getNumberOfChildren(), tripDealsPrefDto.getTripDuration(), cumulatativeRewardPoints);
 		user.setTripDeals(providers);
+		logger.info("Trip duration : " + tripDealsPrefDto.getTripDuration() + ", nb adults : " + tripDealsPrefDto.getNumberOfAdults() + ", nb children : " + tripDealsPrefDto.getNumberOfChildren());
 		return providers; // ou userService.getTripDeals ??
 	}
 

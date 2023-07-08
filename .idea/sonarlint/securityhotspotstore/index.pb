@@ -24,8 +24,6 @@ j
 :src/test/java/tourGuide/repository/UserRepositoryTest.java,3\9\396bc934e0cd045fe11dbe97bd1979f88533fffe
 f
 6src/test/java/tourGuide/service/RewardServiceTest.java,6\7\6748640672ce6f4fffd0f2c3509a3e598df9c6b0
-i
-9src/test/java/tourGuide/service/TourGuideServiceTest.java,7\3\736b7fea38a61c9f895d465d858ee38d31c1917b
 e
 5src/main/java/tourGuide/service/TourGuideService.java,5\6\5627c8e2dfada053c560a4de74da2b6bf0d7fe35
 o

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import tourGuide.dto.NearByAttractionDto;
+import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.service.implementation.GpsServiceImpl;
@@ -85,12 +86,8 @@ public class TourGuideController {
 	}
 
 	@RequestMapping("/getTripDeals")
-	public ResponseEntity<List<Provider>> getTripDeals(@RequestParam String userName) throws UserNotFoundException {
-		// TODO : à modifier, car doit non seulement renvoyer, mais avant calculer...
-//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getTripDeals(userName));
-		// Laisser dans userService si juste pour retourner, mettre dans tourGuide Service si doit calculer d'abord
-		// Et voir si user ou userName en paramètre ?
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getTripDeals(userService.getUserByUserName(userName).get()));
+	public ResponseEntity<List<Provider>> getTripDeals(@RequestBody TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getTripDeals(tripDealsPrefDto));
 	}
 
 	// Added to test
