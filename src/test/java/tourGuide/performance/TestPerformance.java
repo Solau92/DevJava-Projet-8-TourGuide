@@ -39,7 +39,6 @@ public class TestPerformance {
 	 *
 	 *     		InternalTestHelper.setInternalUserNumber(100000);
 	 *
-	 *
 	 *     These tests can be modified to suit new solutions, just as long as the performance metrics
 	 *     at the end of the tests remains consistent.
 	 *

@@ -74,13 +74,16 @@ public class TourGuideServiceImpl implements TourGuideService {
 
 		ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-		List<WorkerTracking> trackers = new ArrayList<>();
-		int bucketSize = users.size() / NUMBER_OF_THREADS;
+		int activeNumberOfThreads = Math.min(NUMBER_OF_THREADS, users.size());
+		logger.info("number of threads : " + NUMBER_OF_THREADS + "real number of threads : " + activeNumberOfThreads);
 
-		for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+		List<WorkerTracking> trackers = new ArrayList<>();
+		int bucketSize = users.size() / activeNumberOfThreads;
+
+		for (int i = 0; i < activeNumberOfThreads; i++) {
 			int from = i * bucketSize;
 			int to = (i + 1) * bucketSize;
-			if (i == NUMBER_OF_THREADS - 1 || to > users.size()) {
+			if (i == activeNumberOfThreads - 1 || to > users.size()) {
 				to = users.size();
 			}
 			logger.info("Thread " + (i + 1) + " will treat users between " + from + " and " + (to - 1));
@@ -98,41 +101,6 @@ public class TourGuideServiceImpl implements TourGuideService {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	// Never used
-	@Override
-	public void trackAllUsersLocation() {
-
-		// TODO : Voir si en paramètre ou pas ? --> plutôt avec une liste en paramètres, parce que pas forcément tous les users
-		List<User> users = new ArrayList<>(userService.getAllUsers().values());
-
-		ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
-
-		List<WorkerTracking> trackers = new ArrayList<WorkerTracking>();
-		int bucketSize = users.size() / NUMBER_OF_THREADS;
-
-		for (int i = 0; i < NUMBER_OF_THREADS; i++) {
-			int from = i * bucketSize;
-			int to = (i + 1) * bucketSize;
-			if (i == NUMBER_OF_THREADS - 1 || to > users.size()) {
-				to = users.size();
-			}
-			logger.info("Thread " + (i + 1) + " will treat users between " + from + " and " + (to - 1));
-			trackers.add(new WorkerTracking(this, users.subList(from, to)));
-		}
-
-		for (WorkerTracking t : trackers) {
-			executorService.execute(t);
-			// Never stops tracking
-		}
-		executorService.shutdown();
-		try {
-			executorService.awaitTermination(15, TimeUnit.MINUTES);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-
 	}
 
 	@Override

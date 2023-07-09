@@ -5,6 +5,7 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -144,19 +145,33 @@ public class TourGuideServiceTest {
 
 		// GIVEN
 
+		User user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
+		User user3 = new User(UUID.randomUUID(), "userName3", "phoneNumber3", "emailAddress3");
+		Map<String, User> users = new HashMap<String, User>();
+		users.put(user1.getUserName(), user1);
+		users.put(user2.getUserName(), user2);
+		users.put(user3.getUserName(), user3);
+
+		when(userService.getAllUsers()).thenReturn(users);
+
+		// Pre-check
+		List<User> allUsers = new ArrayList<>(userService.getAllUsers().values());
+		Map<User, Integer> visitedLocationSize = new HashMap<>();
+		for (User u : allUsers) {
+			visitedLocationSize.put(u, u.getVisitedLocations().size());
+		}
+		for (int i = 0; i < users.size(); i++) {
+			assertEquals(0, allUsers.get(i).getVisitedLocations().size(), "user " + i);
+		}
+
 		// WHEN
+		tourGuideService.trackAllUsersLocationOnce();
 
 		// THEN
-
+		for (int i = 0; i < users.size(); i++) {
+			assertEquals(1, allUsers.get(i).getVisitedLocations().size(), "user " + i);
+		}
 	}
-
-
-	// GIVEN
-
-	// WHEN
-
-	// THEN
-
 
 	@Test
 	void trackUserLocation_Test_Ok(){

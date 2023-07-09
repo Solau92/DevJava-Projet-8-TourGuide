@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class WorkerTracking extends Thread {
-	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
+	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(1);
 	private Logger logger = LoggerFactory.getLogger(WorkerTracking.class);
 	private TourGuideServiceImpl tourGuideServiceImpl;
 	private boolean stop = false;

@@ -7,10 +7,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import tourGuide.dto.NearByAttractionDto;
+import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.GpsRepositoryImpl;
@@ -19,19 +21,26 @@ import tourGuide.service.implementation.GpsServiceImpl;
 import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
 import tourGuide.user.User;
+import tourGuide.user.UserReward;
+import tripPricer.Provider;
+import tripPricer.TripPricer;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @SpringBootTest
 public class TourGuideControllerTest {
 
+	List<Attraction> attractions;
+	List<NearByAttractionDto> attractionsDto = new ArrayList<>();
+	User user1;
+	Map<UUID, Location> currentLocations;
+	Map<String, User> users;
 	@InjectMocks
 	private TourGuideController tourGuideController;
 	@Mock
@@ -44,12 +53,8 @@ public class TourGuideControllerTest {
 	private GpsServiceImpl gpsService;
 	@Mock
 	private GpsRepositoryImpl gpsRepository;
-
-	List<Attraction> attractions;
-	List<NearByAttractionDto> attractionsDto = new ArrayList<>();
-	User user1;
-	Map<UUID, Location> currentLocations;
-	Map<String, User> users;
+	@Mock
+	private TripPricer tripPricer;
 
 	void setUpAttractions() {
 
@@ -147,7 +152,7 @@ public class TourGuideControllerTest {
 	}
 
 	@Test
-	void getNearbyAtttractions_Ok_Test() throws UserNotFoundException {
+	void getNearbyAttractions_Ok_Test() throws UserNotFoundException {
 
 		Location location1 = new Location(0.50, 0.60);
 
@@ -206,16 +211,14 @@ public class TourGuideControllerTest {
 		assertEquals(ACCEPTED, statusResponse);
 	}
 
+
 	@Test
 	void trackAllUsersLocation_Ok_Test() throws UserNotFoundException {
 
 		// GIVEN
 		setUpUsers();
-
 		when(userService.getAllUsers()).thenReturn(users);
-
 		when(tourGuideService.getAllCurrentLocations()).thenReturn(currentLocations);
-
 
 		// WHEN
 		ResponseEntity<Map<UUID, Location>> responseResult = tourGuideController.trackAllUsersLocation();
@@ -223,49 +226,74 @@ public class TourGuideControllerTest {
 		HttpStatusCode statusResponse = responseResult.getStatusCode();
 
 		// THEN
-		assertEquals(3, listResult.size());
-		assertEquals(4, listResult.get(user1.getVisitedLocations().size()));
-		assertEquals(0.5, listResult.get(user1.getUserId()).latitude);
+		verify(tourGuideService, Mockito.times(1)).trackAllUsersLocationOnce();
 		assertEquals(ACCEPTED, statusResponse);
 
+	}
+
+	@Test
+	void getRewards_Ok_Test() throws UserNotFoundException {
+
+		// GIVEN
+		setUpUsers();
+		UserReward reward1 = new UserReward(new VisitedLocation(user1.getUserId(), new Location(110, 110), new Date()), new Attraction("attraction1", "city1", "state1", 110, 110));
+		UserReward reward2 = new UserReward(new VisitedLocation(user1.getUserId(), new Location(120, 120), new Date()), new Attraction("attraction2", "city2", "state2", 120, 120));
+
+		List<UserReward> rewards = new ArrayList<>();
+		rewards.add(reward1);
+		rewards.add(reward2);
+
+		when(userRepository.getUserRewards(anyString())).thenReturn(rewards);
+		when(userService.getUserRewards(anyString())).thenReturn(rewards);
+
+		// WHEN
+		ResponseEntity<List<UserReward>> responseResult = tourGuideController.getRewards(user1.getUserName());
+		List<UserReward> result = responseResult.getBody();
+		HttpStatusCode statusResponse = responseResult.getStatusCode();
+
+		// THEN
+		assertEquals(2, result.size());
+		assertTrue(result.contains(reward2));
+		assertEquals(ACCEPTED, statusResponse);
 
 	}
 
-	@Disabled
 	@Test
-	void getRewards_Ok_Test() {
-
-		// TODO
+	void getTripDeals_Ok_Test() throws UserNotFoundException {
 
 		// GIVEN
+		setUpUsers();
+		Provider provider1 = new Provider(UUID.randomUUID(), "provider1", 100);
+		Provider provider2 = new Provider(UUID.randomUUID(), "provider2", 200);
+		Provider provider3 = new Provider(UUID.randomUUID(), "provider3", 300);
+		Provider provider4 = new Provider(UUID.randomUUID(), "provider4", 400);
+		Provider provider5 = new Provider(UUID.randomUUID(), "provider5", 500);
+		List<Provider> tripDeals = new ArrayList<>();
+		tripDeals.add(provider1);
+		tripDeals.add(provider2);
+		tripDeals.add(provider3);
+		tripDeals.add(provider4);
+		tripDeals.add(provider5);
+
+		when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
+		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(tripDeals);
+		when(tourGuideService.getTripDeals(any(TripDealsPrefDto.class))).thenReturn(tripDeals);
+
+		TripDealsPrefDto tripDealsPrefDto = new TripDealsPrefDto();
+		tripDealsPrefDto.setUserName(user1.getUserName());
+		tripDealsPrefDto.setTripDuration(7);
+		tripDealsPrefDto.setNumberOfAdults(2);
+		tripDealsPrefDto.setNumberOfChildren(1);
 
 		// WHEN
-		//	ResponseEntity<----> responseResult = tourGuideController.get
-		//	---- Result = responseResult.getBody();
-		//	HttpStatusCode statusResponse = responseResult.getStatusCode();
+		ResponseEntity<List<Provider>> responseResult = tourGuideController.getTripDeals(tripDealsPrefDto);
+		List<Provider> result = responseResult.getBody();
+		HttpStatusCode statusResponse = responseResult.getStatusCode();
 
 		// THEN
-		//	assertEquals(ACCEPTED, statusResponse);
-		fail("not yet implemented");
-
-	}
-
-	@Disabled
-	@Test
-	void getTripDeals_Ok_Test() {
-
-		// TODO
-
-		// GIVEN
-
-		// WHEN
-		//	ResponseEntity<----> responseResult = tourGuideController.get
-		//	---- Result = responseResult.getBody();
-		//	HttpStatusCode statusResponse = responseResult.getStatusCode();
-
-		// THEN
-		//	assertEquals(ACCEPTED, statusResponse);
-		fail("not yet implemented");
+		assertEquals(5, result.size());
+		assertTrue(result.contains(provider4));
+		assertEquals(ACCEPTED, statusResponse);
 	}
 
 	@Test

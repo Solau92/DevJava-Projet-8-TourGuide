@@ -35,13 +35,13 @@ public class TourGuideController {
 
 	private GpsServiceImpl gpsService;
 
-	private RewardsServiceImpl rewardsService;
+//	private RewardsServiceImpl rewardsService;
 
-	public TourGuideController(TourGuideServiceImpl tourGuideService, UserServiceImpl userService, GpsServiceImpl gpsService, RewardsServiceImpl rewardsService) {
+	public TourGuideController(TourGuideServiceImpl tourGuideService, UserServiceImpl userService, GpsServiceImpl gpsService/*, RewardsServiceImpl rewardsService*/) {
 		this.userService = userService;
 		this.tourGuideService = tourGuideService;
 		this.gpsService = gpsService;
-		this.rewardsService = rewardsService;
+//		this.rewardsService = rewardsService;
 	}
 
 	@RequestMapping("/")

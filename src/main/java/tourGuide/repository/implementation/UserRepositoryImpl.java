@@ -58,7 +58,10 @@ public class UserRepositoryImpl implements UserRepository {
 			logger.error("User with userName " + user.getUserName() + " already exists");
 			return Optional.empty();
 		}
-		User userSaved = new User(UUID.randomUUID(), user.getUserName(), user.getPhoneNumber(), user.getEmailAddress());
+		User userSaved = user;
+		if (userSaved.getUserId() == null) {
+			userSaved = new User(UUID.randomUUID(), user.getUserName(), user.getPhoneNumber(), user.getEmailAddress());
+		}
 		users.put(userSaved.getUserName(), userSaved);
 		return Optional.of(userSaved);
 	}

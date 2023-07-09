@@ -126,12 +126,14 @@ public class RewardsServiceImpl implements RewardsService {
 				}
 			}
 		}
+
 	}
 	
 
-//	private boolean isWithinAttractionProximity(Attraction attraction, Location location) {
-//		return getDistance(attraction, location) > attractionProximityRange ? false : true;
-//	}
+	// Utilisée pour tester... (mise en public pour ça...) --> voir
+	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
+		return getDistance(attraction, location) > attractionProximityRange ? false : true;
+	}
 	
 	private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;

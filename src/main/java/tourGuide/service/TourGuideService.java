@@ -17,8 +17,6 @@ public interface TourGuideService {
 
 	Map<UUID, Location> getAllCurrentLocations() throws UserNotFoundException;
 
-	void trackAllUsersLocation();
-
 	void trackAllUsersLocationOnce();
 
 	VisitedLocation trackUserLocation(User user);
