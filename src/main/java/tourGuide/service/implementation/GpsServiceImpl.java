@@ -36,11 +36,23 @@ public class GpsServiceImpl implements GpsService {
 		this.rewardsService = rewardsService;
 	}
 
+	/**
+	 * Returns the list of all the attractions from repository.
+	 *
+	 * @return List<Attraction>
+	 */
 	@Override
 	public List<Attraction> getAllAttractions() {
 		return gpsRepository.getAllAttractions();
 	}
 
+	/**
+	 * Returns a list of NearByAttractionDto representing the five nearest Attractions from the given User.
+	 *
+	 * @param userName
+	 * @return List<NearByAttractionDto>
+	 * @throws UserNotFoundException if the given user was not found
+	 */
 	@Override
 	public List<NearByAttractionDto> getNearbyAttractions(String userName) throws UserNotFoundException {
 
@@ -83,6 +95,13 @@ public class GpsServiceImpl implements GpsService {
 		return nearByAttractions;
 	}
 
+	/**
+	 * Returns the distance between the give user Location ande the given attraction Location.
+	 *
+	 * @param userLocation
+	 * @param attractionLocation
+	 * @return double (distance in miles)
+	 */
 	private double distanceBetweenTwoPoints(Location userLocation, Location attractionLocation) {
 
 		double lat1 = Math.toRadians(userLocation.latitude);

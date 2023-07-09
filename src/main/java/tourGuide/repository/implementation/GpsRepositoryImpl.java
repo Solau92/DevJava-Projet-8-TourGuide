@@ -19,6 +19,10 @@ public class GpsRepositoryImpl implements GpsRepository {
 		this.gpsUtil = gpsUtil;
 	}
 
+	/**
+	 * Returns the list of all attractions registered in GpsUtil.
+	 * @return a List of Attractions
+	 */
 	@Override
 	public List<Attraction> getAllAttractions() {
 		return gpsUtil.getAttractions();

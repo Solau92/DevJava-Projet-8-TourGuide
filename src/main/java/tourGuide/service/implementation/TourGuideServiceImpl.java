@@ -40,6 +40,12 @@ public class TourGuideServiceImpl implements TourGuideService {
 		this.userService = userService;
 	}
 
+	/**
+	 * Returns the last visited location of a User, given his userName.
+	 * @param userName
+	 * @return Location
+	 * @throws UserNotFoundException if the User was not found
+	 */
 	@Override
 	public Location getUserLocation(String userName) throws UserNotFoundException {
 
@@ -52,6 +58,11 @@ public class TourGuideServiceImpl implements TourGuideService {
 		return this.trackUserLocation(user).location;
 	}
 
+	/**
+	 * Returns the last visited Location of all the Users.
+	 * @return Map<UUID, Location> containing for all the User, their ID and last visited Location
+	 * @throws UserNotFoundException if the User was not found
+	 */
 	@Override
 	public Map<UUID, Location> getAllCurrentLocations() throws UserNotFoundException {
 
@@ -66,11 +77,16 @@ public class TourGuideServiceImpl implements TourGuideService {
 		return currentLocations;
 	}
 
+	/**
+	 * For all the Users of the repository list, track the User location (cf. method trackUserLocation)
+	 */
 	@Override
 	public void trackAllUsersLocationOnce() {
 
 		// TODO : Voir si en paramètre ou pas ? --> plutôt avec une liste en paramètres, parce que pas forcément tous les users
 		List<User> users = new ArrayList<>(userService.getAllUsers().values());
+
+		// Split the list of users and make a list of tasks
 
 		ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
@@ -90,11 +106,14 @@ public class TourGuideServiceImpl implements TourGuideService {
 			trackers.add(new WorkerTracking(this, users.subList(from, to)));
 		}
 
+		// Execute all the tasks
+
 		for (WorkerTracking t : trackers) {
 			executorService.execute(t);
 			// Immediately stop tracking: will be done only once
 			t.stopTracking();
 		}
+		
 		executorService.shutdown();
 		try {
 			executorService.awaitTermination(15, TimeUnit.MINUTES);
@@ -103,6 +122,12 @@ public class TourGuideServiceImpl implements TourGuideService {
 		}
 	}
 
+	/**
+	 * Searches the Location of a given User, add it to his visited location and calculates the associate Reward.
+	 *
+	 * @param user
+	 * @return the visited Location added
+	 */
 	@Override
 	public VisitedLocation trackUserLocation(User user) {
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
@@ -111,6 +136,12 @@ public class TourGuideServiceImpl implements TourGuideService {
 		return visitedLocation;
 	}
 
+	/**
+	 * Returns a list of Provider corresponding to the trip deals for a given User and his trip UserPreferences.
+	 * @param tripDealsPrefDto
+	 * @return List<Provider>
+	 * @throws UserNotFoundException if the User was not found
+	 */
 	@Override
 	public List<Provider> getTripDeals(TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
 
@@ -122,5 +153,7 @@ public class TourGuideServiceImpl implements TourGuideService {
 		user.setTripDeals(providers);
 		return providers;
 	}
+
+
 
 }

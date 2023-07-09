@@ -17,7 +17,6 @@ import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.service.implementation.GpsServiceImpl;
-import tourGuide.service.implementation.RewardsServiceImpl;
 import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
 import tourGuide.user.User;
@@ -35,13 +34,11 @@ public class TourGuideController {
 
 	private GpsServiceImpl gpsService;
 
-//	private RewardsServiceImpl rewardsService;
 
 	public TourGuideController(TourGuideServiceImpl tourGuideService, UserServiceImpl userService, GpsServiceImpl gpsService/*, RewardsServiceImpl rewardsService*/) {
 		this.userService = userService;
 		this.tourGuideService = tourGuideService;
 		this.gpsService = gpsService;
-//		this.rewardsService = rewardsService;
 	}
 
 	@RequestMapping("/")
@@ -50,41 +47,70 @@ public class TourGuideController {
 		return "Greetings from TourGuide!";
 	}
 
+	/**
+	 *
+	 * @param userName
+	 * @return
+	 * @throws UserNotFoundException
+	 */
 	@RequestMapping("/getLocation")
 	public ResponseEntity<Location> getLocation(@RequestParam String userName) throws UserNotFoundException {
 		logger.info("/getLocation for user " + userName);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getUserLocation(userName));
 	}
 
+	/**
+	 *
+	 * @param userName
+	 * @return
+	 * @throws UserNotFoundException
+	 */
 	@RequestMapping("/getNearbyAttractions")
 	public ResponseEntity<List<NearByAttractionDto>> getNearbyAttractions(@RequestParam String userName) throws UserNotFoundException {
-		// A mettre dans TourGuideService ?? gpsService ?
 		logger.info("/getNearbyAttractions for user " + userName);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getNearbyAttractions(userName));
 	}
 
 	// Added to test
+
+	/**
+	 *
+	 * @return
+	 */
 	@RequestMapping("/getAllAttractions")
 	public ResponseEntity<List<Attraction>> getAllAttractions() {
 		logger.info("/getAllAttractions");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getAllAttractions());
 	}
 
+	/**
+	 *
+	 * @param userName
+	 * @return
+	 * @throws UserNotFoundException
+	 */
 	@RequestMapping("/getRewards")
 	public ResponseEntity<List<UserReward>> getRewards(@RequestParam String userName) throws UserNotFoundException {
-		// A mettre où ?
-		// Laisser dans userService si juste pour retourner, mettre dans tourGuide ou reward Service si doit calculer d'abord
 		logger.info("/getRewards for user " + userName);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getUserRewards(userName));
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws UserNotFoundException
+	 */
 	@RequestMapping("/getAllCurrentLocations")
-	// En fait : lastVisitedLocation...
 	public ResponseEntity<Map<UUID, Location>> getAllCurrentLocations() throws UserNotFoundException {
 		logger.info("/getAllCurrentLocations");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws UserNotFoundException
+	 */
 	@RequestMapping("/trackAllUsersLocation")
 	public ResponseEntity<Map<UUID, Location>> trackAllUsersLocation() throws UserNotFoundException {
 		logger.info("/trackAllUsersLocation");
@@ -93,13 +119,24 @@ public class TourGuideController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
 	}
 
+	/**
+	 *
+	 * @param tripDealsPrefDto
+	 * @return
+	 * @throws UserNotFoundException
+	 */
 	@RequestMapping("/getTripDeals")
 	public ResponseEntity<List<Provider>> getTripDeals(@RequestBody TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
 		logger.info("/getTripDeals for user " + tripDealsPrefDto.getUserName());
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getTripDeals(tripDealsPrefDto));
 	}
 
-	// Added to test
+	/**
+	 *
+	 * @param user
+	 * @return
+	 * @throws UserAlreadyExistsException
+	 */
 	@PostMapping("/addUser")
 	public ResponseEntity<User> addUser(@RequestBody User user) throws UserAlreadyExistsException {
 		logger.info("/addUser named " + user.getUserName());

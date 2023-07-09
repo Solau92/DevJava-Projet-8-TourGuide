@@ -7,8 +7,6 @@ i
 9src/test/java/tourGuide/repository/GpsRepositoryTest.java,2\5\25e9973ea7ee7734bee84cff0e5e9ed3284025dd
 X
 (gradle/wrapper/gradle-wrapper.properties,f\b\fbe448ebfc3eb2d4e308f6b8b043666f5b57235e
-`
-0src/main/java/tourGuide/service/UserService.java,2\9\29bfc6f1ed684b93380b0026ef8fcb9c12ab19b0
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 j
@@ -32,8 +30,6 @@ X
 (src/main/java/tourGuide/Application.java,6\8\689351e2b9165d30c04dcfeaedb457382301305a
 a
 1src/main/java/tourGuide/dto/TripDealsPrefDto.java,7\c\7ceaa19c9f0f7742291c6e9816dc34babdc4d6e2
-_
-/src/main/java/tourGuide/service/GpsService.java,6\3\632ceb5b73455106e60b97a8504bcf0b91922b6b
 ^
 .src/test/resources/application-test.properties,5\f\5fa5523417fdd12c4e399061c9d6be3a30829722
 l
@@ -42,11 +38,7 @@ q
 Asrc/main/java/tourGuide/exception/UserAlreadyExistsException.java,a\9\a98e98e037167443e6ffe862c6b7417fe139d3bf
 d
 4src/main/java/tourGuide/dto/NearByAttractionDto.java,3\6\36aefe437507e616849d1407b9fb625decb79a68
-\
-,src/main/java/tourGuide/TourGuideModule.java,9\1\9122fc1049d7e21e4f83621db015512b9559e2c5
 c
 3src/main/java/tourGuide/tracker/MultiThreading.java,a\1\a1b01e3dc0408af85a53e2facbc118c3c5c2ed70
-\
-,src/main/java/tourGuide/tracker/Tracker.java,8\0\80fc86ba24afd210d494b8c565433ca0e9d883bf
 \
 ,src/test/java/tourGuide/TestPerformance.java,7\e\7eb72b2b1afe12bc5820299c07d6e5b238031696

@@ -10,10 +10,16 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class WorkerTracking extends Thread {
+
+	/**
+	 * Not used in this version of the code, but could be used for a continuous tracking
+	 * (the method that creates WorkerTracking should not call the stopTracking() method)
+	 */
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(1);
+	private boolean stop = false;
+
 	private Logger logger = LoggerFactory.getLogger(WorkerTracking.class);
 	private TourGuideServiceImpl tourGuideServiceImpl;
-	private boolean stop = false;
 
 	private List<User> users;
 
@@ -23,15 +29,21 @@ public class WorkerTracking extends Thread {
 		logger.debug("new track");
 	}
 
+	/**
+	 * Stops the run() method
+	 */
 	public void stopTracking() {
 		stop = true;
 		this.interrupt();
 	}
 
+	/**
+	 * Tracks user location for each user of the users list.
+	 */
 	@Override
 	public void run() {
 
-		while(true) {
+		while (true) {
 			StopWatch stopWatch = new StopWatch();
 
 			logger.info("Begin Tracker. Tracking " + users.size() + " users.");

@@ -12,8 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class WorkerRewards extends Thread {
 
-	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
-	List<User> users;
+	private List<User> users;
 	private Logger logger = LoggerFactory.getLogger(WorkerRewards.class);
 
 	private RewardsServiceImpl rewardService;
@@ -24,32 +23,38 @@ public class WorkerRewards extends Thread {
 		this.users = users;
 	}
 
+	/**
+	 * Stops the run() method
+	 */
 	public void stopTracking() {
 		stop = true;
 		this.interrupt();
 	}
 
+	/**
+	 * Calculates the reward points for all UserReward just added but without points for each user of the users list
+	 */
 	@Override
 	public void run() {
 
-			StopWatch stopWatch = new StopWatch();
+		StopWatch stopWatch = new StopWatch();
 
-			logger.info("Begin calculating rewards for " + users.size() + " users.");
-			stopWatch.start();
+		logger.info("Begin calculating rewards for " + users.size() + " users.");
+		stopWatch.start();
 
-			logger.info("Thread name :" + Thread.currentThread().getName());
+		logger.info("Thread name :" + Thread.currentThread().getName());
 
-			for (User u : users) {
+		for (User u : users) {
 
-				for (UserReward r : u.getUserRewards()) {
-					if (r.getRewardPoints() == -1) {
-						r.setRewardPoints(rewardService.getRewardPoints(r.attraction, u));
-					}
+			for (UserReward r : u.getUserRewards()) {
+				if (r.getRewardPoints() == -1) {
+					r.setRewardPoints(rewardService.getRewardPoints(r.attraction, u));
 				}
 			}
+		}
 
-			stopWatch.stop();
-			logger.info("Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
+		stopWatch.stop();
+		logger.info("Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 
 	}
 }
