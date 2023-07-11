@@ -34,7 +34,7 @@ import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @SpringBootTest
-public class TourGuideControllerTest {
+class TourGuideControllerTest {
 
 	List<Attraction> attractions;
 	List<NearByAttractionDto> attractionsDto = new ArrayList<>();

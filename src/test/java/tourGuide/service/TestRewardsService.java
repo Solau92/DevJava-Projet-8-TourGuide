@@ -1,4 +1,4 @@
-package tourGuide;
+package tourGuide.service;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 //@SpringBootTest
-public class TestRewardsService {
+class TestRewardsService {
 
 	@BeforeAll
 	static void setUp() {
@@ -38,7 +38,7 @@ public class TestRewardsService {
 	}
 
 	@Test
-	public void userGetRewards() {
+	void userGetRewards() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());
 
@@ -51,11 +51,11 @@ public class TestRewardsService {
 		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
 		tourGuideService.trackUserLocation(user);
 		List<UserReward> userRewards = user.getUserRewards();
-		assertTrue(userRewards.size() == 1);
+		assertEquals(1, userRewards.size());
 	}
 
 	@Test
-	public void isWithinAttractionProximity() {
+	void isWithinAttractionProximity() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());
 		Attraction attraction = gpsUtil.getAttractions().get(0);
@@ -63,7 +63,7 @@ public class TestRewardsService {
 	}
 
 	@Test
-	public void nearAllAttractions() throws UserNotFoundException, UserAlreadyExistsException {
+	void nearAllAttractions() throws UserNotFoundException, UserAlreadyExistsException {
 
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());

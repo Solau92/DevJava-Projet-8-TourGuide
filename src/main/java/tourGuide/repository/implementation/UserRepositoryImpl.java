@@ -10,7 +10,6 @@ import tourGuide.exception.UserNotFoundException;
 import tourGuide.helper.UsersTestConfig;
 import tourGuide.repository.UserRepository;
 import tourGuide.user.User;
-import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 

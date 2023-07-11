@@ -48,10 +48,11 @@ public class TourGuideController {
 	}
 
 	/**
+	 * Gets the Location of a User given his userName.
 	 *
 	 * @param userName
-	 * @return
-	 * @throws UserNotFoundException
+	 * @return ResponseEntity<Location> with http status accepted
+	 * @throws UserNotFoundException if the User was not found
 	 */
 	@RequestMapping("/getLocation")
 	public ResponseEntity<Location> getLocation(@RequestParam String userName) throws UserNotFoundException {
@@ -60,10 +61,11 @@ public class TourGuideController {
 	}
 
 	/**
+	 * Gets the nearest attraction of a User given his userName.
 	 *
 	 * @param userName
-	 * @return
-	 * @throws UserNotFoundException
+	 * @return ResponseEntity<List < NearByAttractionDto>> with http status accepted
+	 * @throws UserNotFoundException if the User was not found
 	 */
 	@RequestMapping("/getNearbyAttractions")
 	public ResponseEntity<List<NearByAttractionDto>> getNearbyAttractions(@RequestParam String userName) throws UserNotFoundException {
@@ -71,11 +73,11 @@ public class TourGuideController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getNearbyAttractions(userName));
 	}
 
-	// Added to test
-
 	/**
+	 * Gets all the registered attractions.
+	 * Added to test
 	 *
-	 * @return
+	 * @return ResponseEntity<List < Attraction>> with http status accepted
 	 */
 	@RequestMapping("/getAllAttractions")
 	public ResponseEntity<List<Attraction>> getAllAttractions() {
@@ -84,10 +86,11 @@ public class TourGuideController {
 	}
 
 	/**
+	 * Gets the rewards of a User given his userName.
 	 *
 	 * @param userName
-	 * @return
-	 * @throws UserNotFoundException
+	 * @return ResponseEntity<List < UserReward>> with http status accepted
+	 * @throws UserNotFoundException if the User was not found
 	 */
 	@RequestMapping("/getRewards")
 	public ResponseEntity<List<UserReward>> getRewards(@RequestParam String userName) throws UserNotFoundException {
@@ -96,9 +99,10 @@ public class TourGuideController {
 	}
 
 	/**
+	 * Gets the last visited Location of all the Users.
 	 *
-	 * @return
-	 * @throws UserNotFoundException
+	 * @return ResponseEntity<Map < UUID, Location>> with http status accepted
+	 * @throws UserNotFoundException if the User was not found
 	 */
 	@RequestMapping("/getAllCurrentLocations")
 	public ResponseEntity<Map<UUID, Location>> getAllCurrentLocations() throws UserNotFoundException {
@@ -107,9 +111,10 @@ public class TourGuideController {
 	}
 
 	/**
+	 * Tracks the location of all the Users.
 	 *
-	 * @return
-	 * @throws UserNotFoundException
+	 * @return ResponseEntity<Map < UUID, Location>> with http status accepted
+	 * @throws UserNotFoundException if the User was not found
 	 */
 	@RequestMapping("/trackAllUsersLocation")
 	public ResponseEntity<Map<UUID, Location>> trackAllUsersLocation() throws UserNotFoundException {
@@ -120,10 +125,11 @@ public class TourGuideController {
 	}
 
 	/**
+	 * Gets the tripdeals for a given User and his trip preferences.
 	 *
 	 * @param tripDealsPrefDto
-	 * @return
-	 * @throws UserNotFoundException
+	 * @return ResponseEntity<List < Provider>> with http status accepted
+	 * @throws UserNotFoundException if the User was not found
 	 */
 	@RequestMapping("/getTripDeals")
 	public ResponseEntity<List<Provider>> getTripDeals(@RequestBody TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
@@ -132,10 +138,11 @@ public class TourGuideController {
 	}
 
 	/**
+	 * Adds the given User.
 	 *
 	 * @param user
-	 * @return
-	 * @throws UserAlreadyExistsException
+	 * @return ResponseEntity<User> with http status created
+	 * @throws UserAlreadyExistsException if the User already exists
 	 */
 	@PostMapping("/addUser")
 	public ResponseEntity<User> addUser(@RequestBody User user) throws UserAlreadyExistsException {

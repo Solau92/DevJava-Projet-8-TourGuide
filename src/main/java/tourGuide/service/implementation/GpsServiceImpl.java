@@ -19,8 +19,6 @@ public class GpsServiceImpl implements GpsService {
 
 	private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
-	private Logger logger = LoggerFactory.getLogger(GpsServiceImpl.class);
-
 	private GpsRepositoryImpl gpsRepository;
 
 	private TourGuideServiceImpl tourGuideService;

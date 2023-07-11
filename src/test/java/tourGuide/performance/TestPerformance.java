@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class TestPerformance {
+class TestPerformance {
 
 	@BeforeAll
 	static void setUp() {
@@ -52,7 +52,7 @@ public class TestPerformance {
 	 */
 
 	@Test
-	public void highVolumeTrackLocation() {
+	void highVolumeTrackLocation() {
 
 		int nbOfUsers = 100;
 
@@ -98,7 +98,7 @@ public class TestPerformance {
 
 
 	@Test
-	public void highVolumeGetRewards() {
+	void highVolumeGetRewards() {
 
 		int nbOfUsers = 100;
 
@@ -114,7 +114,7 @@ public class TestPerformance {
 		List<User> allUsers = new ArrayList<>(userService.getAllUsers().values());
 
 		for(User user : allUsers) {
-			assertTrue(user.getUserRewards().size() == 0);
+			assertEquals(0, user.getUserRewards().size());
 		}
 
 		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
