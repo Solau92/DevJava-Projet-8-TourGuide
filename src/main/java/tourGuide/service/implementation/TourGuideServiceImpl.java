@@ -26,8 +26,8 @@ import tripPricer.TripPricer;
 public class TourGuideServiceImpl implements TourGuideService {
 	public static final int NUMBER_OF_THREADS = 40;
 
-//	***private final GpsUtil gpsUtil;
-	private GpsRepositoryImpl gpsRepository;
+private final GpsUtil gpsUtil;
+//	private GpsRepositoryImpl gpsRepository;
 
 	private final RewardsServiceImpl rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
@@ -38,9 +38,9 @@ public class TourGuideServiceImpl implements TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideServiceImpl.class);
 	private UserServiceImpl userService;
 
-	public TourGuideServiceImpl(/*GpsUtil gpsUtil*/GpsRepositoryImpl gpsRepository, RewardsServiceImpl rewardsServiceImpl, UserServiceImpl userService) {
-//		***this.gpsUtil = gpsUtil;
-		this.gpsRepository = gpsRepository;
+	public TourGuideServiceImpl(GpsUtil gpsUtil, RewardsServiceImpl rewardsServiceImpl, UserServiceImpl userService) {
+		this.gpsUtil = gpsUtil;
+		//this.gpsRepository = gpsRepository;
 		this.rewardsService = rewardsServiceImpl;
 		this.userService = userService;
 	}
@@ -135,9 +135,9 @@ public class TourGuideServiceImpl implements TourGuideService {
 	@Override
 	public VisitedLocation trackUserLocation(User user) {
 
-//		*** VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+ VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 
-		VisitedLocation visitedLocation = gpsRepository.getUserLocation(user.getUserId());
+//		VisitedLocation visitedLocation = gpsRepository.getUserLocation(user.getUserId());
 
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);

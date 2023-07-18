@@ -40,6 +40,10 @@ class TestRewardsService {
 	@Test
 	void userGetRewards() {
 		GpsUtil gpsUtil = new GpsUtil();
+
+
+
+//		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());
 		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());
 
 		InternalTestHelper.setInternalUserNumber(0);

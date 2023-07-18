@@ -40,8 +40,6 @@ c
 3src/main/java/tourGuide/service/RewardsService.java,6\b\6b4462b986bbafe1fde4efb166bf7e674a7c6f0a
 i
 9src/test/java/tourGuide/service/TourGuideServiceTest.java,7\3\736b7fea38a61c9f895d465d858ee38d31c1917b
-g
-7src/test/java/tourGuide/service/TestRewardsService.java,b\9\b9d5ae390c6a71509c0b24b46a1a35c7047b27e5
 c
 3src/test/java/tourGuide/service/GpsServiceTest.java,b\7\b72a17680590c003b0fa85ff39d07c0b8ed9cbc1
 ;
@@ -60,8 +58,6 @@ y
 Isrc/main/java/tourGuide/repository/implementation/UserRepositoryImpl.java,c\4\c4e9f5890430b4eed3fe4523f8394c8f63282994
 i
 9src/test/java/tourGuide/repository/GpsRepositoryTest.java,2\5\25e9973ea7ee7734bee84cff0e5e9ed3284025dd
-i
-9src/test/java/tourGuide/service/TestTourGuideService.java,7\e\7ec48c0f7fc0fc773206ea23d5302eb98cbba297
 j
 :src/test/java/tourGuide/repository/UserRepositoryTest.java,3\9\396bc934e0cd045fe11dbe97bd1979f88533fffe
 c
@@ -70,3 +66,17 @@ d
 4src/test/java/tourGuide/service/UserServiceTest.java,d\c\dcd9cb5da1bc1c4d381972e6441b1a900239f24d
 V
 &src/main/java/tourGuide/user/User.java,a\c\ace4caeb6244b360c72b2f1e5b8dffecd5a161dc
+h
+8src/main/java/tourGuide/controller/AdviceController.java,3\d\3dd9e18da5740d99941ba292b9ec4f39ddfa2926
+d
+4src/main/java/tourGuide/dto/NearByAttractionDto.java,3\6\36aefe437507e616849d1407b9fb625decb79a68
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+b
+2src/main/java/tourGuide/worker/WorkerTracking.java,1\b\1bd7e5f52bdbf0ec7f5cfee973a30b331bfdace6
+_
+/src/main/java/tourGuide/service/GpsService.java,6\3\632ceb5b73455106e60b97a8504bcf0b91922b6b
+a
+1src/main/java/tourGuide/worker/WorkerRewards.java,4\f\4f55866fb6015a33122847238b159071be32215f
+e
+5src/main/java/tourGuide/repository/GpsRepository.java,7\6\76ec6e97e67c4d9d810c444abd27c835eb0bb8da
