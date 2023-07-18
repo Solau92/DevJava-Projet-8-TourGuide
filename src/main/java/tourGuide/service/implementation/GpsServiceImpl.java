@@ -2,8 +2,7 @@ package tourGuide.service.implementation;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import gpsUtil.location.VisitedLocation;
 import org.springframework.stereotype.Service;
 import tourGuide.dto.NearByAttractionDto;
 import tourGuide.exception.UserNotFoundException;
@@ -43,6 +42,17 @@ public class GpsServiceImpl implements GpsService {
 	public List<Attraction> getAllAttractions() {
 		return gpsRepository.getAllAttractions();
 	}
+
+	/**
+	 * TODO : *************************
+	 * @param userId
+	 * @return
+	 */
+	@Override
+	public VisitedLocation getUserLocation(UUID userId) {
+		return gpsRepository.getUserLocation(userId);
+	}
+
 
 	/**
 	 * Returns a list of NearByAttractionDto representing the five nearest Attractions from the given User.

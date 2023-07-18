@@ -54,7 +54,7 @@ class TestPerformance {
 	@Test
 	void highVolumeTrackLocation() {
 
-		int nbOfUsers = 100;
+		int nbOfUsers = 100000;
 
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());
@@ -100,7 +100,7 @@ class TestPerformance {
 	@Test
 	void highVolumeGetRewards() {
 
-		int nbOfUsers = 100;
+		int nbOfUsers = 100000;
 
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());

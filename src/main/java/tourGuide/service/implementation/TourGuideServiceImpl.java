@@ -15,8 +15,9 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserNotFoundException;
+import tourGuide.repository.implementation.GpsRepositoryImpl;
 import tourGuide.service.TourGuideService;
-import tourGuide.tracker.WorkerTracking;
+import tourGuide.worker.WorkerTracking;
 import tourGuide.user.User;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
@@ -24,7 +25,10 @@ import tripPricer.TripPricer;
 @Service
 public class TourGuideServiceImpl implements TourGuideService {
 	public static final int NUMBER_OF_THREADS = 40;
-	private final GpsUtil gpsUtil;
+
+//	***private final GpsUtil gpsUtil;
+	private GpsRepositoryImpl gpsRepository;
+
 	private final RewardsServiceImpl rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 
@@ -34,8 +38,9 @@ public class TourGuideServiceImpl implements TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideServiceImpl.class);
 	private UserServiceImpl userService;
 
-	public TourGuideServiceImpl(GpsUtil gpsUtil, RewardsServiceImpl rewardsServiceImpl, UserServiceImpl userService) {
-		this.gpsUtil = gpsUtil;
+	public TourGuideServiceImpl(/*GpsUtil gpsUtil*/GpsRepositoryImpl gpsRepository, RewardsServiceImpl rewardsServiceImpl, UserServiceImpl userService) {
+//		***this.gpsUtil = gpsUtil;
+		this.gpsRepository = gpsRepository;
 		this.rewardsService = rewardsServiceImpl;
 		this.userService = userService;
 	}
@@ -83,7 +88,6 @@ public class TourGuideServiceImpl implements TourGuideService {
 	@Override
 	public void trackAllUsersLocationOnce() {
 
-		// TODO : Voir si en paramètre ou pas ? --> plutôt avec une liste en paramètres, parce que pas forcément tous les users
 		List<User> users = new ArrayList<>(userService.getAllUsers().values());
 
 		// Split the list of users and make a list of tasks
@@ -130,7 +134,11 @@ public class TourGuideServiceImpl implements TourGuideService {
 	 */
 	@Override
 	public VisitedLocation trackUserLocation(User user) {
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+
+//		*** VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+
+		VisitedLocation visitedLocation = gpsRepository.getUserLocation(user.getUserId());
+
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
 		return visitedLocation;

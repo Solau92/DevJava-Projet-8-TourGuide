@@ -1,10 +1,12 @@
 package tourGuide.service;
 
 import gpsUtil.location.Attraction;
+import gpsUtil.location.VisitedLocation;
 import tourGuide.dto.NearByAttractionDto;
 import tourGuide.exception.UserNotFoundException;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface GpsService {
 
@@ -15,6 +17,8 @@ public interface GpsService {
 	 * @return List<Attraction>
 	 */
 	List<Attraction> getAllAttractions();
+
+	VisitedLocation getUserLocation(UUID userId);
 
 	/**
 	 * Returns a list of NearByAttractionDto representing the five nearest Attractions from the given User.
