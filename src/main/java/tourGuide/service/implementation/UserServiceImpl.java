@@ -3,7 +3,9 @@ package tourGuide.service.implementation;
 import gpsUtil.location.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.UserRepositoryImpl;
@@ -11,6 +13,7 @@ import tourGuide.service.UserService;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
+import tripPricer.TripPricer;
 
 import java.util.*;
 
@@ -19,6 +22,11 @@ public class UserServiceImpl implements UserService {
 
 	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	private UserRepositoryImpl userRepository;
+
+	private final TripPricer tripPricer = new TripPricer();
+
+	@Value("${tourGuide.tripPricerApiKey}")
+	private String tripPricerApiKey;
 
 	public UserServiceImpl(UserRepositoryImpl userRepository) {
 		this.userRepository = userRepository;
@@ -113,6 +121,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
+	 * TODO : voir si toujours utile
 	 * Returns a list of Providers, corresponding to the trip deals for a given User.
 	 *
 	 * @param userName
@@ -122,6 +131,25 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<Provider> getTripDeals(String userName) throws UserNotFoundException {
 		return userRepository.getTripDeals(userName);
+	}
+
+	/**
+	 * Returns a list of Provider corresponding to the trip deals for a given User and his trip UserPreferences.
+	 *
+	 * @param tripDealsPrefDto
+	 * @return List<Provider>
+	 * @throws UserNotFoundException if the User was not found
+	 */
+	@Override
+	public List<Provider>calculateTripDeals(TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
+
+		User user = this.getUserByUserName(tripDealsPrefDto.getUserName()).get();
+
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+		List<Provider> providers = tripPricer.getPrice(this.tripPricerApiKey, user.getUserId(), tripDealsPrefDto.getNumberOfAdults(),
+				tripDealsPrefDto.getNumberOfChildren(), tripDealsPrefDto.getTripDuration(), cumulativeRewardPoints);
+		user.setTripDeals(providers);
+		return providers;
 	}
 
 }

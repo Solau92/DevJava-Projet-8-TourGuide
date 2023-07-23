@@ -17,7 +17,6 @@ import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.service.implementation.GpsServiceImpl;
-import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
@@ -28,16 +27,13 @@ public class TourGuideController {
 
 	private Logger logger = LoggerFactory.getLogger(TourGuideController.class);
 
-	private TourGuideServiceImpl tourGuideService;
-
 	private UserServiceImpl userService;
 
 	private GpsServiceImpl gpsService;
 
 
-	public TourGuideController(TourGuideServiceImpl tourGuideService, UserServiceImpl userService, GpsServiceImpl gpsService/*, RewardsServiceImpl rewardsService*/) {
+	public TourGuideController(UserServiceImpl userService, GpsServiceImpl gpsService/*, RewardsServiceImpl rewardsService*/) {
 		this.userService = userService;
-		this.tourGuideService = tourGuideService;
 		this.gpsService = gpsService;
 	}
 
@@ -57,7 +53,7 @@ public class TourGuideController {
 	@RequestMapping("/getLocation")
 	public ResponseEntity<Location> getLocation(@RequestParam String userName) throws UserNotFoundException {
 		logger.info("/getLocation for user " + userName);
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getUserLocation(userName));
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getUserLocation(userName));
 	}
 
 	/**
@@ -107,7 +103,8 @@ public class TourGuideController {
 	@RequestMapping("/getAllCurrentLocations")
 	public ResponseEntity<Map<UUID, Location>> getAllCurrentLocations() throws UserNotFoundException {
 		logger.info("/getAllCurrentLocations");
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getAllCurrentLocations());
+//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
 	}
 
 	/**
@@ -119,22 +116,25 @@ public class TourGuideController {
 	@RequestMapping("/trackAllUsersLocation")
 	public ResponseEntity<Map<UUID, Location>> trackAllUsersLocation() throws UserNotFoundException {
 		logger.info("/trackAllUsersLocation");
-		tourGuideService.trackAllUsersLocationOnce();
+//		tourGuideService.trackAllUsersLocationOnce();
+		gpsService.trackAllUsersLocationOnce();
 		logger.info("tracked all users location once");
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
+//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getAllCurrentLocations());
 	}
 
 	/**
 	 * Gets the tripdeals for a given User and his trip preferences.
 	 *
 	 * @param tripDealsPrefDto
-	 * @return ResponseEntity<List < Provider>> with http status accepted
+	 * @return ResponseEntity<List<Provider>> with http status accepted
 	 * @throws UserNotFoundException if the User was not found
 	 */
 	@RequestMapping("/getTripDeals")
 	public ResponseEntity<List<Provider>> getTripDeals(@RequestBody TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
 		logger.info("/getTripDeals for user " + tripDealsPrefDto.getUserName());
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getTripDeals(tripDealsPrefDto));
+//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getTripDeals(tripDealsPrefDto));
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.calculateTripDeals(tripDealsPrefDto));
 	}
 
 	/**

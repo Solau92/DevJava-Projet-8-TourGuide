@@ -1,8 +1,11 @@
 package tourGuide.service.implementation;
 
+import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import tourGuide.dto.NearByAttractionDto;
 import tourGuide.exception.UserNotFoundException;
@@ -10,26 +13,32 @@ import tourGuide.repository.implementation.GpsRepositoryImpl;
 import tourGuide.service.GpsService;
 import tourGuide.service.RewardsService;
 import tourGuide.service.UserService;
+import tourGuide.user.User;
+import tourGuide.worker.WorkerTracking;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class GpsServiceImpl implements GpsService {
+
+	private Logger logger = LoggerFactory.getLogger(GpsServiceImpl.class);
 
 	private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
 	private GpsRepositoryImpl gpsRepository;
 
-	private TourGuideServiceImpl tourGuideService;
+	public static final int NUMBER_OF_THREADS = 40;
 
 	private UserService userService;
 
 	private RewardsService rewardsService;
 
-	public GpsServiceImpl(GpsRepositoryImpl gpsRepository, UserService userService, TourGuideServiceImpl tourGuideService, RewardsServiceImpl rewardsService) {
+	public GpsServiceImpl(GpsRepositoryImpl gpsRepository, UserService userService/*, TourGuideServiceImpl tourGuideService*/, RewardsServiceImpl rewardsService) {
 		this.gpsRepository = gpsRepository;
 		this.userService = userService;
-		this.tourGuideService = tourGuideService;
 		this.rewardsService = rewardsService;
 	}
 
@@ -44,9 +53,10 @@ public class GpsServiceImpl implements GpsService {
 	}
 
 	/**
-	 * TODO : *************************
+	 * Returns the last visited location of a User, given his id.
+	 *
 	 * @param userId
-	 * @return
+	 * @return Location
 	 */
 	@Override
 	public VisitedLocation getUserLocation(UUID userId) {
@@ -64,7 +74,7 @@ public class GpsServiceImpl implements GpsService {
 	@Override
 	public List<NearByAttractionDto> getNearbyAttractions(String userName) throws UserNotFoundException {
 
-		Location userLocation = tourGuideService.getUserLocation(userName);
+		Location userLocation = this.getUserLocation(userName);
 		double userLatitude = userLocation.latitude;
 		double userLongitude = userLocation.longitude;
 
@@ -125,4 +135,108 @@ public class GpsServiceImpl implements GpsService {
 
 		return statuteMiles;
 	}
+
+
+	/////////////////////////////////////// TODO : ordre des méthodes à revoir
+
+	/**
+	 * Returns the last visited location of a User, given his userName.
+	 *
+	 * @param userName
+	 * @return Location
+	 * @throws UserNotFoundException if the User was not found
+	 */
+	@Override
+	public Location getUserLocation(String userName) throws UserNotFoundException {
+
+		Optional<Location> userLocation = userService.getUserLocation(userName);
+
+		if (!userLocation.isEmpty()) {
+			return userLocation.get();
+		}
+		User user = userService.getUserByUserName(userName).get();
+		return this.trackUserLocation(user).location;
+	}
+
+	/**
+	 * Searches the Location of a given User, add it to his visited location and calculates the associate Reward.
+	 *
+	 * @param user
+	 * @return the visited Location added
+	 */
+	@Override
+	public VisitedLocation trackUserLocation(User user) {
+
+		VisitedLocation visitedLocation = gpsRepository.getUserLocation(user.getUserId());
+
+		user.addToVisitedLocations(visitedLocation);
+		rewardsService.calculateRewards(user);
+		return visitedLocation;
+	}
+
+	/**
+	 * Returns the last visited Location of all the Users.
+	 *
+	 * @return Map<UUID, Location> containing for all the User, their ID and last visited Location
+	 * @throws UserNotFoundException if the User was not found
+	 */
+	@Override
+	public Map<UUID, Location> getAllCurrentLocations() throws UserNotFoundException {
+
+		Map<UUID, Location> currentLocations = new HashMap<>();
+
+		Map<String, User> users = userService.getAllUsers();
+
+		for (User u : users.values()) {
+			currentLocations.put(u.getUserId(), this.getUserLocation(u.getUserName()));
+		}
+
+		return currentLocations;
+	}
+
+	/**
+	 * For all the Users of the repository list, track the User location (cf. method trackUserLocation)
+	 */
+	@Override
+	public void trackAllUsersLocationOnce() {
+
+		List<User> users = new ArrayList<>(userService.getAllUsers().values());
+
+		// Split the list of users and make a list of tasks
+
+		ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
+		int activeNumberOfThreads = Math.min(NUMBER_OF_THREADS, users.size());
+		logger.info("number of threads : " + NUMBER_OF_THREADS + "real number of threads : " + activeNumberOfThreads);
+
+		List<WorkerTracking> trackers = new ArrayList<>();
+		int bucketSize = users.size() / activeNumberOfThreads;
+
+		for (int i = 0; i < activeNumberOfThreads; i++) {
+			int from = i * bucketSize;
+			int to = (i + 1) * bucketSize;
+			if (i == activeNumberOfThreads - 1 || to > users.size()) {
+				to = users.size();
+			}
+			logger.info("Thread " + (i + 1) + " will treat users between " + from + " and " + (to - 1));
+			trackers.add(new WorkerTracking(this, users.subList(from, to)));
+		}
+
+		// Execute all the tasks
+
+		for (WorkerTracking t : trackers) {
+			executorService.execute(t);
+			// Immediately stop tracking: will be done only once
+			t.stopTracking();
+		}
+
+		executorService.shutdown();
+		try {
+			executorService.awaitTermination(15, TimeUnit.MINUTES);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+
 }

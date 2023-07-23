@@ -3,6 +3,7 @@ package tourGuide.worker;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tourGuide.service.implementation.GpsServiceImpl;
 import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.user.User;
 
@@ -19,12 +20,13 @@ public class WorkerTracking extends Thread {
 	private boolean stop = false;
 
 	private Logger logger = LoggerFactory.getLogger(WorkerTracking.class);
-	private TourGuideServiceImpl tourGuideServiceImpl;
+	private GpsServiceImpl tourGuideServiceImpl;
 
 	private List<User> users;
 
-	public WorkerTracking(TourGuideServiceImpl tourGuideServiceImpl, List<User> users) {
+	public WorkerTracking(GpsServiceImpl tourGuideServiceImpl, List<User> users) {
 		this.tourGuideServiceImpl = tourGuideServiceImpl;
+//		this.tourGuideServiceImpl = tourGuideServiceImpl;
 		this.users = users;
 		logger.debug("new track");
 	}

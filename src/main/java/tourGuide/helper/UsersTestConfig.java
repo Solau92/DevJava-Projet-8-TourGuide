@@ -19,6 +19,7 @@ import java.util.stream.IntStream;
 @Configuration
 public class UsersTestConfig {
 
+	@Value("${testMode}")
 	public static boolean TEST_MODE;
 	private static Logger logger = LoggerFactory.getLogger(UsersTestConfig.class);
 	private static Map<String, User> internalUserMap = new HashMap<>();

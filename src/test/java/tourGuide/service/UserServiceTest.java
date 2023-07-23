@@ -5,10 +5,13 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.UserRepositoryImpl;
@@ -16,15 +19,17 @@ import tourGuide.service.implementation.UserServiceImpl;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
+import tripPricer.TripPricer;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class UserServiceTest {
 
 	User user1;
@@ -33,6 +38,8 @@ class UserServiceTest {
 	private UserServiceImpl userService;
 	@Mock
 	private UserRepositoryImpl userRepository;
+	@Mock
+	private TripPricer tripPricer;
 	private Map<String, User> users = new HashMap<>();
 
 	@BeforeEach
@@ -231,6 +238,33 @@ class UserServiceTest {
 		// WHEN
 		// THEN
 		assertThrows(UserNotFoundException.class, () -> userService.getTripDeals("userNotFound"));
+	}
+
+	@Disabled
+	@Test
+	void calculateTripDeals_Ok_Test() throws UserNotFoundException {
+
+		//TODO : à revoir quand méthode revue
+
+		// GIVEN
+		when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
+		when(userRepository.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
+
+		List<Provider> providers = new ArrayList<>();
+		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(providers);
+
+		TripDealsPrefDto tripDealsPrefDto = new TripDealsPrefDto();
+		tripDealsPrefDto.setUserName(user1.getUserName());
+		tripDealsPrefDto.setTripDuration(2);
+		tripDealsPrefDto.setNumberOfAdults(7);
+		tripDealsPrefDto.setNumberOfChildren(1);
+
+		// WHEN
+		List<Provider> providersFound = userService.calculateTripDeals(tripDealsPrefDto);
+
+		// THEN
+		assertEquals(5, user1.getTripDeals().size());
+
 	}
 
 }

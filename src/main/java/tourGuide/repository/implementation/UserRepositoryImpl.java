@@ -3,6 +3,7 @@ package tourGuide.repository.implementation;
 import gpsUtil.location.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 import tourGuide.exception.UserAlreadyExistsException;
@@ -19,12 +20,18 @@ import java.util.*;
 @DependsOn("usersTestConfig")
 public class UserRepositoryImpl implements UserRepository {
 
+	@Value("${testMode}")
+	private boolean TEST_MODE;
+
 	private final Map<String, User> internalUserMap = new HashMap<>();
 	private Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 	private Map<String, User> users;
 
 	public UserRepositoryImpl() {
 		this.users = new HashMap<>();
+
+		//logger.info("Test mode : " + UsersTestConfig.TEST_MODE);
+
 		if (UsersTestConfig.TEST_MODE) {
 			logger.info("TestMode enabled");
 			logger.debug("Initializing users");

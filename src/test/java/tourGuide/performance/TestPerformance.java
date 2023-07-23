@@ -13,8 +13,8 @@ import tourGuide.helper.InternalTestHelper;
 import tourGuide.helper.UsersTestConfig;
 import tourGuide.repository.implementation.GpsRepositoryImpl;
 import tourGuide.repository.implementation.UserRepositoryImpl;
+import tourGuide.service.implementation.GpsServiceImpl;
 import tourGuide.service.implementation.RewardsServiceImpl;
-import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.service.implementation.UserServiceImpl;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
@@ -33,6 +33,7 @@ class TestPerformance {
 	static void setUp() {
 		Locale.setDefault(Locale.US);
 	}
+
 	/*
 	 * A note on performance improvements:
 	 *
@@ -61,13 +62,13 @@ class TestPerformance {
 
 		GpsRepositoryImpl gpsRepository = new GpsRepositoryImpl(gpsUtil);
 
-		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());
+		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
 		//RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
 
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
 		InternalTestHelper.setInternalUserNumber(nbOfUsers);
 
-		System.out.println(UsersTestConfig.TEST_MODE);
+//		System.out.println(UsersTestConfig.TEST_MODE);
 
 		UserServiceImpl userService = new UserServiceImpl(new UserRepositoryImpl());
 
@@ -81,14 +82,16 @@ class TestPerformance {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
-		TourGuideServiceImpl tourGuideService = new TourGuideServiceImpl(gpsUtil, rewardsService, userService);
+//		TourGuideServiceImpl tourGuideService = new TourGuideServiceImpl(gpsUtil, rewardsService, userService);
 	//	TourGuideServiceImpl tourGuideService = new TourGuideServiceImpl(gpsRepository, rewardsService, userService);
+
+		GpsServiceImpl gpsService = new GpsServiceImpl(gpsRepository, userService, rewardsService);
 
 		for (int i = 0; i < nbOfUsers; i++) {
 			assertEquals(3, allUsers.get(i).getVisitedLocations().size(), "user " + i);
 		}
 
-		tourGuideService.trackAllUsersLocationOnce();
+		gpsService.trackAllUsersLocationOnce();
 
 		stopWatch.stop();
 
@@ -113,7 +116,7 @@ class TestPerformance {
 
 		GpsRepositoryImpl gpsRepository = new GpsRepositoryImpl(gpsUtil);
 
-		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsUtil, new RewardCentral());
+		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
 		//RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes

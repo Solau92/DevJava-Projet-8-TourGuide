@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import rewardCentral.RewardCentral;
+import tourGuide.repository.implementation.GpsRepositoryImpl;
 import tourGuide.service.implementation.RewardsServiceImpl;
 import tourGuide.user.User;
 
@@ -31,6 +32,9 @@ class RewardServiceTest {
 
 	@Mock
 	private GpsUtil gpsUtil;
+
+	@Mock
+	private GpsRepositoryImpl gpsRepository;
 
 	@Mock
 	RewardCentral rewardCentral;
@@ -66,7 +70,7 @@ class RewardServiceTest {
 		user1.addToVisitedLocations(new VisitedLocation(user1.getUserId(), location3, new Date()));
 		user1.addToVisitedLocations(new VisitedLocation(user1.getUserId(), location4, new Date()));
 
-		when(gpsUtil.getAttractions()).thenReturn(attractions);
+		when(gpsRepository.getAllAttractions()).thenReturn(attractions);
 
 		rewardsService.calculateRewards(user1);
 

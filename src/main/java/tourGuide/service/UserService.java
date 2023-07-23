@@ -1,6 +1,7 @@
 package tourGuide.service;
 
 import gpsUtil.location.Location;
+import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserAlreadyExistsException;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.user.User;
@@ -74,4 +75,11 @@ public interface UserService {
 	 */
 	List<Provider> getTripDeals(String userName) throws UserNotFoundException;
 
+	/**
+	 * TODO
+	 * @param tripDealsPrefDto
+	 * @return
+	 * @throws UserNotFoundException
+	 */
+	List<Provider>calculateTripDeals(TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException;
 }

@@ -20,8 +20,8 @@ public class TourGuideModule {
 	
 	@Bean
 	public RewardsService getRewardsService() {
-		return new RewardsServiceImpl(getGpsUtil(), getRewardCentral());
-//		return new RewardsServiceImpl(new GpsRepositoryImpl(getGpsUtil()), getRewardCentral());
+//		return new RewardsServiceImpl(getGpsUtil(), getRewardCentral());
+		return new RewardsServiceImpl(new GpsRepositoryImpl(getGpsUtil()), getRewardCentral());
 	}
 	
 	@Bean

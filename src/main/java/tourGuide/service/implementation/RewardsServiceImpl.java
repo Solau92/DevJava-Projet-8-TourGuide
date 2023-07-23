@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
@@ -26,18 +25,16 @@ public class RewardsServiceImpl implements RewardsService {
 
 	public static final int NUMBER_OF_THREADS = 200;
 	private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
-	private final GpsUtil gpsUtil;
-	//	private GpsRepositoryImpl gpsRepository;
 	private final RewardCentral rewardsCentral;
+	private GpsRepositoryImpl gpsRepository;
 	private Logger logger = LoggerFactory.getLogger(RewardsServiceImpl.class);
 	// proximity in miles
 	private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
 
-	public RewardsServiceImpl(GpsUtil gpsUtil, RewardCentral rewardCentral) {
-		//		this.gpsRepository = gpsRepository;
-		this.gpsUtil = gpsUtil;
+	public RewardsServiceImpl(GpsRepositoryImpl gpsRepository, RewardCentral rewardCentral) {
+		this.gpsRepository = gpsRepository;
 		this.rewardsCentral = rewardCentral;
 	}
 
@@ -69,8 +66,7 @@ public class RewardsServiceImpl implements RewardsService {
 
 		// Find the UserRewards that must be added
 
-		List<Attraction> attractions = gpsUtil.getAttractions();
-		//		List<Attraction> attractions = gpsRepository.getAllAttractions();
+		List<Attraction> attractions = gpsRepository.getAllAttractions();
 
 		List<User> rewardedUsers = new ArrayList<>();
 
@@ -127,7 +123,6 @@ public class RewardsServiceImpl implements RewardsService {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	/**
@@ -139,8 +134,7 @@ public class RewardsServiceImpl implements RewardsService {
 	public void calculateRewards(User user) {
 
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
-		List<Attraction> attractions = gpsUtil.getAttractions();
-//		List<Attraction> attractions = gpsRepository.getAllAttractions();
+		List<Attraction> attractions = gpsRepository.getAllAttractions();
 
 		for (VisitedLocation visitedLocation : userLocations) {
 			for (Attraction attraction : attractions) {
