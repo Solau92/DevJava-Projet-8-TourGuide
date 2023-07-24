@@ -1,7 +1,5 @@
 package tourGuide.dto;
 
-import org.javamoney.moneta.Money;
-
 public class TripDealsPrefDto {
 
 	private String userName;

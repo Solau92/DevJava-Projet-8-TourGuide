@@ -7,7 +7,6 @@ import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
 import tourGuide.repository.implementation.GpsRepositoryImpl;
 import tourGuide.service.RewardsService;
-import tourGuide.service.implementation.GpsServiceImpl;
 import tourGuide.service.implementation.RewardsServiceImpl;
 
 @Configuration

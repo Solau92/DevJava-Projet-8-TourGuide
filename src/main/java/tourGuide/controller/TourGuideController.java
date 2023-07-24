@@ -143,8 +143,7 @@ public class TourGuideController {
 	@PostMapping("/addUser")
 	public ResponseEntity<String> addUser(@RequestBody User user) throws UserAlreadyExistsException {
 		logger.info("/addUser named " + user.getUserName());
-		User addedUser = userService.addUser(user).get();
-		return ResponseEntity.status(HttpStatus.CREATED).body(addedUser.getUserName() + " successfully added");
+		return ResponseEntity.status(HttpStatus.CREATED).body(userService.addUser(user).get().getUserName() + " successfully added");
 	}
 
 }

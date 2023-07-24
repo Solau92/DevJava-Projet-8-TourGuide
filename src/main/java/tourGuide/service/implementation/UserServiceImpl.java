@@ -121,7 +121,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * TODO : voir si toujours utile
 	 * Returns a list of Providers, corresponding to the trip deals for a given User.
 	 *
 	 * @param userName
