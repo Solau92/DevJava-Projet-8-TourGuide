@@ -1,4 +1,4 @@
-package tourGuide.service;
+//package tourGuide.service;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
@@ -28,12 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 //@SpringBootTest
-class TestRewardsService {
-
-	@BeforeAll
-	static void setUp() {
-		Locale.setDefault(Locale.US);
-	}
+//class TestRewardsService {
+//
+//	@BeforeAll
+//	static void setUp() {
+//		Locale.setDefault(Locale.US);
+//	}
 
 //	@Test
 //	void userGetRewards() {
@@ -87,4 +87,4 @@ class TestRewardsService {
 //		assertEquals(gpsUtil.getAttractions().size(), userRewards.size());
 //	}
 
-}
+//}

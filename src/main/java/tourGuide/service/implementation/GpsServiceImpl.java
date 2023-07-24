@@ -24,14 +24,10 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class GpsServiceImpl implements GpsService {
 
-	private Logger logger = LoggerFactory.getLogger(GpsServiceImpl.class);
-
-	private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
-
-	private GpsRepositoryImpl gpsRepository;
-
 	public static final int NUMBER_OF_THREADS = 40;
-
+	private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
+	private Logger logger = LoggerFactory.getLogger(GpsServiceImpl.class);
+	private GpsRepositoryImpl gpsRepository;
 	private UserService userService;
 
 	private RewardsService rewardsService;
@@ -62,7 +58,6 @@ public class GpsServiceImpl implements GpsService {
 	public VisitedLocation getUserLocation(UUID userId) {
 		return gpsRepository.getUserLocation(userId);
 	}
-
 
 	/**
 	 * Returns a list of NearByAttractionDto representing the five nearest Attractions from the given User.
@@ -109,7 +104,6 @@ public class GpsServiceImpl implements GpsService {
 				numberOfAttractions--;
 			}
 		}
-
 		return nearByAttractions;
 	}
 
@@ -135,9 +129,6 @@ public class GpsServiceImpl implements GpsService {
 
 		return statuteMiles;
 	}
-
-
-	/////////////////////////////////////// TODO : ordre des méthodes à revoir
 
 	/**
 	 * Returns the last visited location of a User, given his userName.
@@ -237,6 +228,5 @@ public class GpsServiceImpl implements GpsService {
 			throw new RuntimeException(e);
 		}
 	}
-
 
 }

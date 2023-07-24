@@ -78,7 +78,6 @@ jacocoTestReport {
                     "**/Application.*",
                     "**/TourGuideModule.*",
                     "**/AdviceController.*",
-                    "**/repository/**"
             ])
         }))
     }

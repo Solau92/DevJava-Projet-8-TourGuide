@@ -1,39 +1,39 @@
-package tourGuide.service;
-
-import gpsUtil.GpsUtil;
-import gpsUtil.location.VisitedLocation;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import rewardCentral.RewardCentral;
-import tourGuide.dto.NearByAttractionDto;
-import tourGuide.dto.TripDealsPrefDto;
-import tourGuide.exception.UserAlreadyExistsException;
-import tourGuide.exception.UserNotFoundException;
-import tourGuide.helper.InternalTestHelper;
-import tourGuide.repository.implementation.GpsRepositoryImpl;
-import tourGuide.repository.implementation.UserRepositoryImpl;
-import tourGuide.service.GpsService;
-import tourGuide.service.implementation.GpsServiceImpl;
-import tourGuide.service.implementation.RewardsServiceImpl;
-import tourGuide.service.implementation.UserServiceImpl;
-import tourGuide.user.User;
-import tripPricer.Provider;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-class TestTourGuideService {
-
-	@BeforeAll
-	static void setUp() {
-		Locale.setDefault(Locale.US);
-	}
-
+//package tourGuide.service;
+//
+//import gpsUtil.GpsUtil;
+//import gpsUtil.location.VisitedLocation;
+//import org.junit.jupiter.api.BeforeAll;
+//import org.junit.jupiter.api.Test;
+//import rewardCentral.RewardCentral;
+//import tourGuide.dto.NearByAttractionDto;
+//import tourGuide.dto.TripDealsPrefDto;
+//import tourGuide.exception.UserAlreadyExistsException;
+//import tourGuide.exception.UserNotFoundException;
+//import tourGuide.helper.InternalTestHelper;
+//import tourGuide.repository.implementation.GpsRepositoryImpl;
+//import tourGuide.repository.implementation.UserRepositoryImpl;
+//import tourGuide.service.GpsService;
+//import tourGuide.service.implementation.GpsServiceImpl;
+//import tourGuide.service.implementation.RewardsServiceImpl;
+//import tourGuide.service.implementation.UserServiceImpl;
+//import tourGuide.user.User;
+//import tripPricer.Provider;
+//
+//import java.util.List;
+//import java.util.Locale;
+//import java.util.Map;
+//import java.util.UUID;
+//
+//import static org.junit.jupiter.api.Assertions.assertEquals;
+//import static org.junit.jupiter.api.Assertions.assertTrue;
+//
+//class TestTourGuideService {
+//
+//	@BeforeAll
+//	static void setUp() {
+//		Locale.setDefault(Locale.US);
+//	}
+//
 //	@Test
 //	void getUserLocation() {
 //		GpsUtil gpsUtil = new GpsUtil();
@@ -146,5 +146,5 @@ class TestTourGuideService {
 //		assertEquals(5, providers.size());
 //	}
 //
-
-}
+//
+//}

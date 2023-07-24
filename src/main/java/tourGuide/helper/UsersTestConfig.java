@@ -87,11 +87,15 @@ public class UsersTestConfig {
 		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
 
+	/**
+	 * Used because @Value does not support static fields.
+	 *
+	 * @param testMode
+	 */
 	@Value("${testMode}")
 	public void setTestMode(boolean testMode) {
 		UsersTestConfig.TEST_MODE = testMode;
 		logger.info("Test mode : " + TEST_MODE);
 	}
-
 
 }

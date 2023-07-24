@@ -3,13 +3,14 @@ package tourGuide.repository;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.helper.UsersTestConfig;
 import tourGuide.repository.implementation.UserRepositoryImpl;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
@@ -18,19 +19,13 @@ import tripPricer.Provider;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 
 @SpringBootTest
-//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("testFalse")
 class UserRepositoryTest {
 
 	@InjectMocks
 	private UserRepositoryImpl userRepository;
-
-	@Mock
-	private static UsersTestConfig usersTestConfig;
 
 	private Map<String, User> users = new HashMap<>();
 
@@ -47,17 +42,15 @@ class UserRepositoryTest {
 	public void setUp() {
 		user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
 		user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
-		users.put(user1.getUserName(), user1);
-		users.put(user2.getUserName(), user2);
+		user1.addToVisitedLocations(new VisitedLocation(user1.getUserId(), new Location(10, 10), new Date()));
+		user2.addToVisitedLocations(new VisitedLocation(user2.getUserId(), new Location(20, 20), new Date()));
+
+		userRepository.addUser(user1);
+		userRepository.addUser(user2);
 	}
 
-	@AfterEach
-	public void tearDown() {
-		users = new HashMap<>();
-	}
 
 	@Test
-//	@Order(1)
 	void getAllUsers_Ok_Test() {
 
 		// GIVEN
@@ -65,7 +58,7 @@ class UserRepositoryTest {
 		Map<String, User> usersFound = userRepository.getAllUsers();
 
 		// THEN
-		assertEquals(InternalTestHelper.getInternalUserNumber(), usersFound.size());
+		assertEquals(2, usersFound.size());
 	}
 
 	@Test
@@ -73,10 +66,10 @@ class UserRepositoryTest {
 
 		// GIVEN
 		// WHEN
-		User userFound = userRepository.getUserByUserName("internalUser5").get();
+		User userFound = userRepository.getUserByUserName(user1.getUserName()).get();
 
 		// THEN
-		assertEquals("internalUser5@tourGuide.com", userFound.getEmailAddress());
+		assertEquals(user1.getEmailAddress(), userFound.getEmailAddress());
 	}
 
 	@Test
@@ -90,37 +83,37 @@ class UserRepositoryTest {
 		assertTrue(userFound.isEmpty());
 	}
 
-//	@Test
-//	@Order(3)
-//	void addUser_Ok_Test() {
-//
-//		// GIVEN
-//		// WHEN
-//		Optional<User> userAdded = userRepository.addUser(user1);
-//
-//		// THEN
-//		assertEquals("userName1", userAdded.get().getUserName());
-//	}
-//
-//	@Test
-//	@Order(4)
-//	void addUser_UserAlreadyExists_Test() {
-//
-//		// GIVEN
-//		// WHEN
-//		userRepository.addUser(user1);
-//		Optional<User> userAdded = userRepository.addUser(user1);
-//
-//		// THEN
-//		assertTrue(userAdded.isEmpty());
-//	}
+	@Test
+	void addUser_Ok_Test() {
+
+		// GIVEN
+		User user4 = new User(UUID.randomUUID(), "userName4", "phoneNumber4", "emailAddress4");
+
+		// WHEN
+		Optional<User> userAdded = userRepository.addUser(user4);
+
+		// THEN
+		assertEquals("userName4", userAdded.get().getUserName());
+	}
+
+	@Test
+	void addUser_UserAlreadyExists_Test() {
+
+		// GIVEN
+		// WHEN
+		userRepository.addUser(user1);
+		Optional<User> userAdded = userRepository.addUser(user1);
+
+		// THEN
+		assertTrue(userAdded.isEmpty());
+	}
 
 	@Test
 	void getUserLocation_LocationFound_Test() throws UserNotFoundException {
 
 		// GIVEN
 		// WHEN
-		Optional<Location> locationFound = userRepository.getUserLocation(userRepository.getUserByUserName("internalUser1").get());
+		Optional<Location> locationFound = userRepository.getUserLocation(userRepository.getUserByUserName(user1.getUserName()).get());
 
 		// THEN
 		assertFalse(locationFound.isEmpty());
@@ -130,15 +123,17 @@ class UserRepositoryTest {
 	void getUserLocation_NoLocationFound_Test() throws UserNotFoundException {
 
 		// GIVEN
+		User user3 = new User(UUID.randomUUID(), "userName3", "phoneNumber3", "emailAddress3");
+		userRepository.addUser(user3);
+
 		// WHEN
-		Optional<Location> locationFound = userRepository.getUserLocation(user1);
+		Optional<Location> locationFound = userRepository.getUserLocation(user3);
 
 		// THEN
 		assertTrue(locationFound.isEmpty());
 	}
 
 	@Test
-//	@Order(2)
 	void getAllCurrentLocations_Ok_Test() {
 
 		// GIVEN
@@ -146,7 +141,7 @@ class UserRepositoryTest {
 		Map<UUID, Location> currentLocationsFound = userRepository.getAllCurrentLocations();
 
 		// THEN
-		assertEquals(InternalTestHelper.getInternalUserNumber(), currentLocationsFound.size());
+		assertEquals(2, currentLocationsFound.size());
 	}
 
 	@Test
@@ -156,10 +151,10 @@ class UserRepositoryTest {
 		VisitedLocation visitedLocation1 = new VisitedLocation(user1.getUserId(), new Location(100, 100), new Date());
 		Attraction attraction1 = new Attraction("attraction1", "city1", "state1", 100, 100);
 		UserReward reward1 = new UserReward(visitedLocation1, attraction1);
-		userRepository.getAllUsers().get("internalUser1").addUserReward(reward1);
+		userRepository.getAllUsers().get(user1.getUserName()).addUserReward(reward1);
 
 		// WHEN
-		List<UserReward> rewardsFound = userRepository.getUserRewards("internalUser1");
+		List<UserReward> rewardsFound = userRepository.getUserRewards(user1.getUserName());
 
 		// THEN
 		assertTrue(rewardsFound.contains(reward1));
@@ -190,10 +185,10 @@ class UserRepositoryTest {
 		tripDeals.add(provider3);
 		tripDeals.add(provider4);
 		tripDeals.add(provider5);
-		userRepository.getAllUsers().get("internalUser1").setTripDeals(tripDeals);
+		userRepository.getAllUsers().get(user1.getUserName()).setTripDeals(tripDeals);
 
 		// WHEN
-		List<Provider> tripDealsFound = userRepository.getTripDeals("internalUser1");
+		List<Provider> tripDealsFound = userRepository.getTripDeals(user1.getUserName());
 
 		// THEN
 		assertTrue(tripDealsFound.contains(provider1));
@@ -203,10 +198,10 @@ class UserRepositoryTest {
 		VisitedLocation visitedLocation1 = new VisitedLocation(user1.getUserId(), new Location(100, 100), new Date());
 		Attraction attraction1 = new Attraction("attraction1", "city1", "state1", 100, 100);
 		UserReward reward1 = new UserReward(visitedLocation1, attraction1);
-		userRepository.getAllUsers().get("internalUser1").addUserReward(reward1);
+		userRepository.getAllUsers().get(user1.getUserName()).addUserReward(reward1);
 
 		// WHEN
-		List<UserReward> rewardsFound = userRepository.getUserRewards("internalUser1");
+		List<UserReward> rewardsFound = userRepository.getUserRewards(user1.getUserName());
 
 		// THEN
 		assertTrue(rewardsFound.contains(reward1));

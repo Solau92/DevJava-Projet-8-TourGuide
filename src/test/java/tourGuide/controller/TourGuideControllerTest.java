@@ -1,5 +1,7 @@
 package tourGuide.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
@@ -11,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import tourGuide.dto.NearByAttractionDto;
 import tourGuide.dto.TripDealsPrefDto;
 import tourGuide.exception.UserAlreadyExistsException;
@@ -26,13 +29,16 @@ import tripPricer.TripPricer;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @SpringBootTest
+@ActiveProfiles("testFalse")
 class TourGuideControllerTest {
 
 	List<Attraction> attractions;
@@ -145,7 +151,6 @@ class TourGuideControllerTest {
 		// THEN
 		assertEquals(location1, locationResult);
 		assertEquals(ACCEPTED, statusResponse);
-
 	}
 
 	@Test
@@ -225,91 +230,88 @@ class TourGuideControllerTest {
 		// THEN
 		verify(gpsService, Mockito.times(1)).trackAllUsersLocationOnce();
 		assertEquals(ACCEPTED, statusResponse);
-
 	}
-//
-//	@Test
-//	void getRewards_Ok_Test() throws UserNotFoundException {
-//
-//		// GIVEN
-//		setUpUsers();
-//		UserReward reward1 = new UserReward(new VisitedLocation(user1.getUserId(), new Location(110, 110), new Date()), new Attraction("attraction1", "city1", "state1", 110, 110));
-//		UserReward reward2 = new UserReward(new VisitedLocation(user1.getUserId(), new Location(120, 120), new Date()), new Attraction("attraction2", "city2", "state2", 120, 120));
-//
-//		List<UserReward> rewards = new ArrayList<>();
-//		rewards.add(reward1);
-//		rewards.add(reward2);
-//
-//		when(userRepository.getUserRewards(anyString())).thenReturn(rewards);
-//		when(userService.getUserRewards(anyString())).thenReturn(rewards);
-//
-//		// WHEN
-//		ResponseEntity<List<UserReward>> responseResult = tourGuideController.getRewards(user1.getUserName());
-//		List<UserReward> result = responseResult.getBody();
-//		HttpStatusCode statusResponse = responseResult.getStatusCode();
-//
-//		// THEN
-//		assertEquals(2, result.size());
-//		assertTrue(result.contains(reward2));
-//		assertEquals(ACCEPTED, statusResponse);
-//
-//	}
-//
-//	@Test
-//	void getTripDeals_Ok_Test() throws UserNotFoundException {
-//
-//		// GIVEN
-//		setUpUsers();
-//		Provider provider1 = new Provider(UUID.randomUUID(), "provider1", 100);
-//		Provider provider2 = new Provider(UUID.randomUUID(), "provider2", 200);
-//		Provider provider3 = new Provider(UUID.randomUUID(), "provider3", 300);
-//		Provider provider4 = new Provider(UUID.randomUUID(), "provider4", 400);
-//		Provider provider5 = new Provider(UUID.randomUUID(), "provider5", 500);
-//		List<Provider> tripDeals = new ArrayList<>();
-//		tripDeals.add(provider1);
-//		tripDeals.add(provider2);
-//		tripDeals.add(provider3);
-//		tripDeals.add(provider4);
-//		tripDeals.add(provider5);
-//
-//		when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
-//		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(tripDeals);
-//		when(tourGuideService.getTripDeals(any(TripDealsPrefDto.class))).thenReturn(tripDeals);
-//
-//		TripDealsPrefDto tripDealsPrefDto = new TripDealsPrefDto();
-//		tripDealsPrefDto.setUserName(user1.getUserName());
-//		tripDealsPrefDto.setTripDuration(7);
-//		tripDealsPrefDto.setNumberOfAdults(2);
-//		tripDealsPrefDto.setNumberOfChildren(1);
-//
-//		// WHEN
-//		ResponseEntity<List<Provider>> responseResult = tourGuideController.getTripDeals(tripDealsPrefDto);
-//		List<Provider> result = responseResult.getBody();
-//		HttpStatusCode statusResponse = responseResult.getStatusCode();
-//
-//		// THEN
-//		assertEquals(5, result.size());
-//		assertTrue(result.contains(provider4));
-//		assertEquals(ACCEPTED, statusResponse);
-//	}
-//
-//	@Test
-//	void addUser_Ok_Test() throws UserAlreadyExistsException {
-//
-//		// GIVEN
-//		setUpUsers();
-//		when(userRepository.addUser(any(User.class))).thenReturn(Optional.of(user1));
-//		when(userService.addUser(any(User.class))).thenReturn(Optional.of(user1));
-//
-//		// WHEN
-//		ResponseEntity<User> responseResult = tourGuideController.addUser(user1);
-//		User userCreated = responseResult.getBody();
-//		HttpStatusCode statusResponse = responseResult.getStatusCode();
-//
-//		// THEN
-//		assertEquals(CREATED, statusResponse);
-//		assertEquals(user1.getUserId(), userCreated.getUserId());
-//	}
 
+	@Test
+	void getRewards_Ok_Test() throws UserNotFoundException {
+
+		// GIVEN
+		setUpUsers();
+		UserReward reward1 = new UserReward(new VisitedLocation(user1.getUserId(), new Location(110, 110), new Date()), new Attraction("attraction1", "city1", "state1", 110, 110));
+		UserReward reward2 = new UserReward(new VisitedLocation(user1.getUserId(), new Location(120, 120), new Date()), new Attraction("attraction2", "city2", "state2", 120, 120));
+
+		List<UserReward> rewards = new ArrayList<>();
+		rewards.add(reward1);
+		rewards.add(reward2);
+
+		when(userRepository.getUserRewards(anyString())).thenReturn(rewards);
+		when(userService.getUserRewards(anyString())).thenReturn(rewards);
+
+		// WHEN
+		ResponseEntity<List<UserReward>> responseResult = tourGuideController.getRewards(user1.getUserName());
+		List<UserReward> result = responseResult.getBody();
+		HttpStatusCode statusResponse = responseResult.getStatusCode();
+
+		// THEN
+		assertEquals(2, result.size());
+		assertTrue(result.contains(reward2));
+		assertEquals(ACCEPTED, statusResponse);
+	}
+
+		@Test
+		void getTripDeals_Ok_Test() throws UserNotFoundException {
+
+			// GIVEN
+			setUpUsers();
+			Provider provider1 = new Provider(UUID.randomUUID(), "provider1", 100);
+			Provider provider2 = new Provider(UUID.randomUUID(), "provider2", 200);
+			Provider provider3 = new Provider(UUID.randomUUID(), "provider3", 300);
+			Provider provider4 = new Provider(UUID.randomUUID(), "provider4", 400);
+			Provider provider5 = new Provider(UUID.randomUUID(), "provider5", 500);
+			List<Provider> tripDeals = new ArrayList<>();
+			tripDeals.add(provider1);
+			tripDeals.add(provider2);
+			tripDeals.add(provider3);
+			tripDeals.add(provider4);
+			tripDeals.add(provider5);
+
+			when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
+			when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(tripDeals);
+			when(userService.calculateTripDeals(any(TripDealsPrefDto.class))).thenReturn(tripDeals);
+
+			TripDealsPrefDto tripDealsPrefDto = new TripDealsPrefDto();
+			tripDealsPrefDto.setUserName(user1.getUserName());
+			tripDealsPrefDto.setTripDuration(7);
+			tripDealsPrefDto.setNumberOfAdults(2);
+			tripDealsPrefDto.setNumberOfChildren(1);
+
+			// WHEN
+			ResponseEntity<List<Provider>> responseResult = tourGuideController.getTripDeals(tripDealsPrefDto);
+			List<Provider> result = responseResult.getBody();
+			HttpStatusCode statusResponse = responseResult.getStatusCode();
+
+			// THEN
+			assertEquals(5, result.size());
+			assertTrue(result.contains(provider4));
+			assertEquals(ACCEPTED, statusResponse);
+		}
+
+	@Test
+	void addUser_Ok_Test() throws UserAlreadyExistsException, JsonProcessingException {
+
+		// GIVEN
+		setUpUsers();
+		when(userRepository.addUser(any(User.class))).thenReturn(Optional.of(user1));
+		when(userService.addUser(any(User.class))).thenReturn(Optional.of(user1));
+
+		// WHEN
+		ResponseEntity<String> responseResult = tourGuideController.addUser(user1);
+
+		// THEN
+		HttpStatusCode statusResponse = responseResult.getStatusCode();
+		assertEquals(CREATED, statusResponse);
+
+		assertTrue(responseResult.getBody().contains(user1.getUserName()));
+	}
 
 }

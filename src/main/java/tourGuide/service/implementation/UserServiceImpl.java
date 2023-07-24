@@ -11,6 +11,7 @@ import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.UserRepositoryImpl;
 import tourGuide.service.UserService;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
@@ -20,11 +21,9 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
+	private final TripPricer tripPricer = new TripPricer();
 	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	private UserRepositoryImpl userRepository;
-
-	private final TripPricer tripPricer = new TripPricer();
-
 	@Value("${tourGuide.tripPricerApiKey}")
 	private String tripPricerApiKey;
 
@@ -81,6 +80,7 @@ public class UserServiceImpl implements UserService {
 
 	/**
 	 * Returns an Optional containing the last visited Location of the given user, empty if there is no Location registered for the user.
+	 *
 	 * @param userName
 	 * @return Optional<User> containing the last visited Location of the given user, empty if there is no Location registered for the user.
 	 * @throws UserNotFoundException if the user was not found
@@ -141,15 +141,33 @@ public class UserServiceImpl implements UserService {
 	 * @throws UserNotFoundException if the User was not found
 	 */
 	@Override
-	public List<Provider>calculateTripDeals(TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
+	public List<Provider> calculateTripDeals(TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
 
 		User user = this.getUserByUserName(tripDealsPrefDto.getUserName()).get();
 
+		UserPreferences userPreferences = new UserPreferences();
+		userPreferences.setTripDuration(tripDealsPrefDto.getTripDuration());
+		userPreferences.setNumberOfAdults(tripDealsPrefDto.getNumberOfAdults());
+		userPreferences.setNumberOfChildren(tripDealsPrefDto.getNumberOfChildren());
+		userPreferences.setTripDuration(tripDealsPrefDto.getTripDuration());
+		user.setUserPreferences(userPreferences);
+
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		List<Provider> providers = tripPricer.getPrice(this.tripPricerApiKey, user.getUserId(), tripDealsPrefDto.getNumberOfAdults(),
-				tripDealsPrefDto.getNumberOfChildren(), tripDealsPrefDto.getTripDuration(), cumulativeRewardPoints);
-		user.setTripDeals(providers);
-		return providers;
+		List<Provider> providers = tripPricer.getPrice(this.tripPricerApiKey, user.getUserId(), userPreferences.getNumberOfAdults(),
+				userPreferences.getNumberOfChildren(), userPreferences.getTripDuration(), cumulativeRewardPoints);
+
+		List<Provider> providersCorresponding = new ArrayList<>();
+
+		for (Provider p : providers) {
+
+			if (p.price > tripDealsPrefDto.getLowerPricePoint() && p.price < tripDealsPrefDto.getHigherPricePoint()) {
+				providersCorresponding.add(p);
+			}
+		}
+
+		user.setTripDeals(providersCorresponding);
+		return providersCorresponding;
+
 	}
 
 }

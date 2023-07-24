@@ -30,14 +30,11 @@ public class UserRepositoryImpl implements UserRepository {
 	public UserRepositoryImpl() {
 		this.users = new HashMap<>();
 
-		//logger.info("Test mode : " + UsersTestConfig.TEST_MODE);
-
 		if (UsersTestConfig.TEST_MODE) {
 			logger.info("TestMode enabled");
 			logger.debug("Initializing users");
 			this.users = UsersTestConfig.initializeInternalUsers();
 			logger.info("Finished initializing users");
-
 		}
 	}
 
@@ -129,7 +126,7 @@ public class UserRepositoryImpl implements UserRepository {
 		Map<UUID, Location> currentLocations = new HashMap<>();
 
 		for (User u : users.values()) {
-			currentLocations.put(u.getUserId(), u.getLastVisitedLocation().location);
+				currentLocations.put(u.getUserId(), u.getLastVisitedLocation().location);
 		}
 		return currentLocations;
 	}
@@ -167,10 +164,5 @@ public class UserRepositoryImpl implements UserRepository {
 		return this.getUserByUserName(userName).get().getTripDeals();
 	}
 
-	//	@Override
-	//	public UserPreferences setUserPreferences(User user, UserPreferences userPreferences) {
-	//		user.setUserPreferences(userPreferences);
-	//		return user.getUserPreferences();
-	//	}
 
 }

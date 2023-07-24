@@ -1,5 +1,7 @@
 package tourGuide.dto;
 
+import org.javamoney.moneta.Money;
+
 public class TripDealsPrefDto {
 
 	private String userName;
@@ -9,6 +11,10 @@ public class TripDealsPrefDto {
 	private int numberOfChildren;
 
 	private int tripDuration;
+
+	private double lowerPricePoint;
+
+	private double higherPricePoint;
 
 	public String getUserName() {
 		return userName;
@@ -40,5 +46,21 @@ public class TripDealsPrefDto {
 
 	public void setTripDuration(int tripDuration) {
 		this.tripDuration = tripDuration;
+	}
+
+	public double getLowerPricePoint() {
+		return lowerPricePoint;
+	}
+
+	public void setLowerPricePoint(double lowerPricePoint) {
+		this.lowerPricePoint = lowerPricePoint;
+	}
+
+	public double getHigherPricePoint() {
+		return higherPricePoint;
+	}
+
+	public void setHigherPricePoint(double higherPricePoint) {
+		this.higherPricePoint = higherPricePoint;
 	}
 }

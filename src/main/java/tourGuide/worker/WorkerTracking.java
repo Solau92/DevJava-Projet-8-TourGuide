@@ -4,7 +4,6 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tourGuide.service.implementation.GpsServiceImpl;
-import tourGuide.service.implementation.TourGuideServiceImpl;
 import tourGuide.user.User;
 
 import java.util.List;
@@ -20,13 +19,12 @@ public class WorkerTracking extends Thread {
 	private boolean stop = false;
 
 	private Logger logger = LoggerFactory.getLogger(WorkerTracking.class);
-	private GpsServiceImpl tourGuideServiceImpl;
+	private GpsServiceImpl gpsService;
 
 	private List<User> users;
 
 	public WorkerTracking(GpsServiceImpl tourGuideServiceImpl, List<User> users) {
-		this.tourGuideServiceImpl = tourGuideServiceImpl;
-//		this.tourGuideServiceImpl = tourGuideServiceImpl;
+		this.gpsService = tourGuideServiceImpl;
 		this.users = users;
 		logger.debug("new track");
 	}
@@ -54,7 +52,7 @@ public class WorkerTracking extends Thread {
 			logger.info("Thread name :" + Thread.currentThread().getName());
 
 			for (User u : users) {
-				tourGuideServiceImpl.trackUserLocation(u);
+				gpsService.trackUserLocation(u);
 			}
 
 			stopWatch.stop();

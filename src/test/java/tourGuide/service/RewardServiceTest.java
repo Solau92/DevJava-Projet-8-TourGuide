@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import rewardCentral.RewardCentral;
 import tourGuide.repository.implementation.GpsRepositoryImpl;
 import tourGuide.service.implementation.RewardsServiceImpl;
@@ -23,15 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("testFalse")
 class RewardServiceTest {
-
-	// TODO
 
 	@InjectMocks
 	private RewardsServiceImpl rewardsService;
-
-	@Mock
-	private GpsUtil gpsUtil;
 
 	@Mock
 	private GpsRepositoryImpl gpsRepository;
@@ -42,7 +39,6 @@ class RewardServiceTest {
 	@Test
 	void calculateRewards_Ok_Test() {
 
-		// TODO : à revoir... pourquoi une seule ??
 		List<Attraction> attractions;
 
 		Attraction attraction1 = new Attraction("attraction1", "city1", "state1", 50.0, 60.0);
@@ -79,8 +75,6 @@ class RewardServiceTest {
 
 		assertNotEquals(0, user1.getUserRewards().size(), "user1.getUserRewards().size()");
 		assertEquals(4, user1.getUserRewards().size(), "user1.getUserRewards().size()");
-
 	}
-
 
 }

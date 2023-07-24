@@ -17,8 +17,8 @@ public class GpsRepositoryImpl implements GpsRepository {
 	private GpsUtil gpsUtil;
 
 	public GpsRepositoryImpl(GpsUtil gpsUtil) {
-		this.attractions = new ArrayList<>();
 		this.gpsUtil = gpsUtil;
+		this.attractions = new ArrayList<>();
 	}
 
 	/**
@@ -27,9 +27,18 @@ public class GpsRepositoryImpl implements GpsRepository {
 	 */
 	@Override
 	public List<Attraction> getAllAttractions() {
-		return gpsUtil.getAttractions();
+		if(attractions.isEmpty()) {
+			return gpsUtil.getAttractions();
+		}
+		return this.attractions;
 	}
 
+	/**
+	 * Returns the location of a user, given his id.
+	 *
+	 * @param userId
+	 * @return
+	 */
 	@Override
 	public VisitedLocation getUserLocation(UUID userId) {
 		return gpsUtil.getUserLocation(userId);

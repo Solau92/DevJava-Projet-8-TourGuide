@@ -72,6 +72,4 @@ public interface UserRepository {
 	 */
 	List<Provider> getTripDeals(String userName) throws UserNotFoundException;
 
-	//	UserPreferences setUserPreferences(User user, UserPreferences userPreferences);
-
 }

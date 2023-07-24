@@ -5,7 +5,6 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -25,15 +24,12 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("testFalse")
 class UserServiceTest {
 
-	User user1;
-	User user2;
 	@InjectMocks
 	private UserServiceImpl userService;
 	@Mock
@@ -41,6 +37,9 @@ class UserServiceTest {
 	@Mock
 	private TripPricer tripPricer;
 	private Map<String, User> users = new HashMap<>();
+
+	User user1;
+	User user2;
 
 	@BeforeEach
 	public void setUp() {
@@ -191,7 +190,6 @@ class UserServiceTest {
 		// THEN
 		assertEquals(2, rewardsFound.size());
 		assertTrue(rewardsFound.contains(reward1));
-
 	}
 
 	@Test
@@ -225,7 +223,6 @@ class UserServiceTest {
 		// THEN
 		assertEquals(2, tripDealsFound.size());
 		assertTrue(tripDealsFound.contains(tripDeal2));
-
 	}
 
 	@Test
@@ -240,14 +237,11 @@ class UserServiceTest {
 		assertThrows(UserNotFoundException.class, () -> userService.getTripDeals("userNotFound"));
 	}
 
-	@Disabled
 	@Test
 	void calculateTripDeals_Ok_Test() throws UserNotFoundException {
 
-		//TODO : à revoir quand méthode revue
-
 		// GIVEN
-		when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
+
 		when(userRepository.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
 
 		List<Provider> providers = new ArrayList<>();
@@ -258,13 +252,14 @@ class UserServiceTest {
 		tripDealsPrefDto.setTripDuration(2);
 		tripDealsPrefDto.setNumberOfAdults(7);
 		tripDealsPrefDto.setNumberOfChildren(1);
+		tripDealsPrefDto.setLowerPricePoint(0);
+		tripDealsPrefDto.setHigherPricePoint(Integer.MAX_VALUE);
 
 		// WHEN
 		List<Provider> providersFound = userService.calculateTripDeals(tripDealsPrefDto);
 
 		// THEN
 		assertEquals(5, user1.getTripDeals().size());
-
 	}
 
 }

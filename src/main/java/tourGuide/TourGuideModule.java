@@ -12,21 +12,20 @@ import tourGuide.service.implementation.RewardsServiceImpl;
 
 @Configuration
 public class TourGuideModule {
-	
+
 	@Bean
 	public GpsUtil getGpsUtil() {
 		return new GpsUtil();
 	}
-	
+
 	@Bean
 	public RewardsService getRewardsService() {
-//		return new RewardsServiceImpl(getGpsUtil(), getRewardCentral());
 		return new RewardsServiceImpl(new GpsRepositoryImpl(getGpsUtil()), getRewardCentral());
 	}
-	
+
 	@Bean
 	public RewardCentral getRewardCentral() {
 		return new RewardCentral();
 	}
-	
+
 }

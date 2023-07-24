@@ -13,7 +13,6 @@ import java.util.UUID;
 
 public interface GpsService {
 
-
 	/**
 	 * Returns the list of all the attractions.
 	 *

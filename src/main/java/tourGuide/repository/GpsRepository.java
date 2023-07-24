@@ -14,5 +14,11 @@ public interface GpsRepository {
 	 */
 	List<Attraction> getAllAttractions();
 
+	/**
+	 * Returns the location of a user, given his id.
+	 *
+	 * @param userId
+	 * @return
+	 */
 	VisitedLocation getUserLocation(UUID userId);
 }

@@ -25,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ActiveProfiles("test")
 @SpringBootTest
+@ActiveProfiles("testTrue")
 class TestPerformance {
 
 	@BeforeAll
@@ -56,21 +56,17 @@ class TestPerformance {
 	@Test
 	void highVolumeTrackLocation() {
 
-		int nbOfUsers = 100;
-
-		GpsUtil gpsUtil = new GpsUtil();
-
-		GpsRepositoryImpl gpsRepository = new GpsRepositoryImpl(gpsUtil);
-
-		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
-		//RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
+		//// GIVEN ////
 
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
+		int nbOfUsers = 100;
 		InternalTestHelper.setInternalUserNumber(nbOfUsers);
 
-//		System.out.println(UsersTestConfig.TEST_MODE);
-
+		GpsUtil gpsUtil = new GpsUtil();
+		GpsRepositoryImpl gpsRepository = new GpsRepositoryImpl(gpsUtil);
+		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
 		UserServiceImpl userService = new UserServiceImpl(new UserRepositoryImpl());
+		GpsServiceImpl gpsService = new GpsServiceImpl(gpsRepository, userService, rewardsService);
 
 		List<User> allUsers = new ArrayList<>(userService.getAllUsers().values());
 
@@ -79,61 +75,58 @@ class TestPerformance {
 			visitedLocationSize.put(u, u.getVisitedLocations().size());
 		}
 
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
-
-//		TourGuideServiceImpl tourGuideService = new TourGuideServiceImpl(gpsUtil, rewardsService, userService);
-	//	TourGuideServiceImpl tourGuideService = new TourGuideServiceImpl(gpsRepository, rewardsService, userService);
-
-		GpsServiceImpl gpsService = new GpsServiceImpl(gpsRepository, userService, rewardsService);
-
+		// Checking that there are three visited locations for each user
 		for (int i = 0; i < nbOfUsers; i++) {
 			assertEquals(3, allUsers.get(i).getVisitedLocations().size(), "user " + i);
 		}
+
+		//// WHEN ////
+
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 
 		gpsService.trackAllUsersLocationOnce();
 
 		stopWatch.stop();
 
-		//		tourGuideService.tracker.stopTracking();
+		//// THEN ////
 
-		System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
-		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
-
+		// Checking that there are now four visited locations for each user
 		for (int i = 0; i < nbOfUsers; i++) {
 			assertEquals(4, allUsers.get(i).getVisitedLocations().size(), "user " + i);
 		}
 
+		// Checking the performance
+		System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
+		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	}
 
 
 	@Test
 	void highVolumeGetRewards() {
 
-		int nbOfUsers = 100;
-
-		GpsUtil gpsUtil = new GpsUtil();
-
-		GpsRepositoryImpl gpsRepository = new GpsRepositoryImpl(gpsUtil);
-
-		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
-		//RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
+		//// GIVEN ////
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
+		int nbOfUsers = 100;
 		InternalTestHelper.setInternalUserNumber(nbOfUsers);
 
+		GpsUtil gpsUtil = new GpsUtil();
+		GpsRepositoryImpl gpsRepository = new GpsRepositoryImpl(gpsUtil);
+		RewardsServiceImpl rewardsService = new RewardsServiceImpl(gpsRepository, new RewardCentral());
 		UserServiceImpl userService = new UserServiceImpl(new UserRepositoryImpl());
 
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		List<User> allUsers = new ArrayList<>(userService.getAllUsers().values());
 
+		// Checking that there is no reward for each user
 		for (User user : allUsers) {
 			assertEquals(0, user.getUserRewards().size());
 		}
 
 		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
-		//		allUsers.forEach(u -> rewardsService.calculateRewards(u));
+		//// WHEN ////
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
@@ -142,14 +135,17 @@ class TestPerformance {
 
 		stopWatch.stop();
 
+		//// THEN ////
+
+		// Checking that there is at least one reward for each user
 		for (User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);
 			for (UserReward reward : user.getUserRewards()) {
 				assertTrue(reward.getRewardPoints() > 0);
 			}
 		}
-		//		tourGuideService.tracker.stopTracking();
 
+		// Checking the performance
 		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	}

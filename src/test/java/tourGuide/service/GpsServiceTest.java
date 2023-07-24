@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.w3c.dom.Attr;
 import tourGuide.dto.NearByAttractionDto;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.GpsRepositoryImpl;
@@ -35,7 +34,6 @@ class GpsServiceTest {
 	User user1;
 	Location location1;
 	VisitedLocation visitedLocation1;
-
 	@InjectMocks
 	private GpsServiceImpl gpsService;
 	@Mock
@@ -71,7 +69,6 @@ class GpsServiceTest {
 		user1 = new User(UUID.randomUUID(), "userName1", "phoneNumber1", "emailAddress1");
 		location1 = new Location(50.0, 60.0);
 		visitedLocation1 = new VisitedLocation(UUID.randomUUID(), location1, new Date());
-
 	}
 
 	@Test
@@ -86,14 +83,12 @@ class GpsServiceTest {
 		// THEN
 		assertEquals(6, attractionsFound.size());
 		assertTrue(attractionsFound.contains(attractions.get(0)));
-
 	}
 
 	@Test
 	void getNearbyAttractions_Ok_Test() throws UserNotFoundException {
 
 		// GIVEN
-
 		when(userRepository.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
 		when(userService.getUserByUserName(anyString())).thenReturn(Optional.of(user1));
 		when(userService.getUserLocation(anyString())).thenReturn(Optional.of(location1));
@@ -105,7 +100,6 @@ class GpsServiceTest {
 
 		// THEN
 		assertEquals(5, nearByAttractions.size());
-
 	}
 
 	@Test
@@ -168,6 +162,7 @@ class GpsServiceTest {
 	void getAllCurrentLocations_Ok_Test() throws UserNotFoundException {
 
 		// GIVEN
+
 		user1.addToVisitedLocations(visitedLocation1);
 
 		User user2 = new User(UUID.randomUUID(), "userName2", "phoneNumber2", "emailAddress2");
@@ -192,7 +187,6 @@ class GpsServiceTest {
 		assertEquals(2, locationsFound.size());
 		assertTrue(locationsFound.containsKey(user2.getUserId()));
 		assertTrue(locationsFound.containsValue(location2));
-
 	}
 
 	@Test
@@ -229,7 +223,7 @@ class GpsServiceTest {
 	}
 
 	@Test
-	void trackUserLocation_Test_Ok(){
+	void trackUserLocation_Test_Ok() {
 
 		// GIVEN
 		when(gpsRepository.getUserLocation(any(UUID.class))).thenReturn(visitedLocation1);

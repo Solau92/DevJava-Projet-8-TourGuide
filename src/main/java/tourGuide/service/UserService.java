@@ -44,6 +44,7 @@ public interface UserService {
 
 	/**
 	 * Returns an Optional containing the last visited Location of the given user, empty if there is no Location registered for the user.
+	 *
 	 * @param userName
 	 * @return Optional<User> containing the last visited Location of the given user, empty if there is no Location registered for the user.
 	 * @throws UserNotFoundException if the user was not found
@@ -76,10 +77,11 @@ public interface UserService {
 	List<Provider> getTripDeals(String userName) throws UserNotFoundException;
 
 	/**
-	 * TODO
+	 * Returns a list of Provider corresponding to the trip deals for a given User and his trip UserPreferences.
+	 *
 	 * @param tripDealsPrefDto
-	 * @return
-	 * @throws UserNotFoundException
+	 * @return List<Provider>
+	 * @throws UserNotFoundException if the User was not found
 	 */
-	List<Provider>calculateTripDeals(TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException;
+	List<Provider> calculateTripDeals(TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException;
 }

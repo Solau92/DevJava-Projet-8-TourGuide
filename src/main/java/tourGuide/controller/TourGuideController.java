@@ -104,7 +104,6 @@ public class TourGuideController {
 	public ResponseEntity<Map<UUID, Location>> getAllCurrentLocations() throws UserNotFoundException {
 		logger.info("/getAllCurrentLocations");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getAllCurrentLocations());
-//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
 	}
 
 	/**
@@ -116,10 +115,8 @@ public class TourGuideController {
 	@RequestMapping("/trackAllUsersLocation")
 	public ResponseEntity<Map<UUID, Location>> trackAllUsersLocation() throws UserNotFoundException {
 		logger.info("/trackAllUsersLocation");
-//		tourGuideService.trackAllUsersLocationOnce();
 		gpsService.trackAllUsersLocationOnce();
 		logger.info("tracked all users location once");
-//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getAllCurrentLocations());
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(gpsService.getAllCurrentLocations());
 	}
 
@@ -127,13 +124,12 @@ public class TourGuideController {
 	 * Gets the tripdeals for a given User and his trip preferences.
 	 *
 	 * @param tripDealsPrefDto
-	 * @return ResponseEntity<List<Provider>> with http status accepted
+	 * @return ResponseEntity<List < Provider>> with http status accepted
 	 * @throws UserNotFoundException if the User was not found
 	 */
 	@RequestMapping("/getTripDeals")
 	public ResponseEntity<List<Provider>> getTripDeals(@RequestBody TripDealsPrefDto tripDealsPrefDto) throws UserNotFoundException {
 		logger.info("/getTripDeals for user " + tripDealsPrefDto.getUserName());
-//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(tourGuideService.getTripDeals(tripDealsPrefDto));
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.calculateTripDeals(tripDealsPrefDto));
 	}
 
@@ -145,9 +141,10 @@ public class TourGuideController {
 	 * @throws UserAlreadyExistsException if the User already exists
 	 */
 	@PostMapping("/addUser")
-	public ResponseEntity<User> addUser(@RequestBody User user) throws UserAlreadyExistsException {
+	public ResponseEntity<String> addUser(@RequestBody User user) throws UserAlreadyExistsException {
 		logger.info("/addUser named " + user.getUserName());
-		return ResponseEntity.status(HttpStatus.CREATED).body(userService.addUser(user).get());
+		User addedUser = userService.addUser(user).get();
+		return ResponseEntity.status(HttpStatus.CREATED).body(addedUser.getUserName() + " successfully added");
 	}
 
 }
