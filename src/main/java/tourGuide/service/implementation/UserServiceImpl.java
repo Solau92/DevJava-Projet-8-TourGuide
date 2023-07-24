@@ -158,15 +158,13 @@ public class UserServiceImpl implements UserService {
 		List<Provider> providersCorresponding = new ArrayList<>();
 
 		for (Provider p : providers) {
-
-			if (p.price > tripDealsPrefDto.getLowerPricePoint() && p.price < tripDealsPrefDto.getHigherPricePoint()) {
+			if (p.price >= tripDealsPrefDto.getLowerPricePoint() && p.price <= tripDealsPrefDto.getHigherPricePoint()) {
 				providersCorresponding.add(p);
 			}
 		}
 
 		user.setTripDeals(providersCorresponding);
 		return providersCorresponding;
-
 	}
 
 }
