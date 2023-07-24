@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import tourGuide.dto.NearByAttractionDto;
 import tourGuide.exception.UserNotFoundException;
 import tourGuide.repository.implementation.GpsRepositoryImpl;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("testFalse")
 class GpsServiceTest {
 
 	List<Attraction> attractions;

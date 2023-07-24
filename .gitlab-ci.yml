@@ -1,0 +1,41 @@
+image: gradle:8.1.1-jdk17-jammy 
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+    - echo "Compiling the code..."
+    - gradle compileJava
+    - echo "Compile complete."
+
+
+unit-test-job:   # This job runs in the test stage.
+  stage: test
+  script:
+    - echo "Running tests... "
+    - gradle check
+    - echo "Code coverage is -----%"
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/test/**/TEST-*.xml
+    paths:
+      - build/jacocoHtml
+      - build/reports/tests
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy
+  script:
+    - echo "Deploying application..."
+    - gradle assemble
+    - echo "Application successfully deployed."
+  artifacts:
+    paths:
+    - build/libs/*.jar
+    expire_in: never
+
+

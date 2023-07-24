@@ -3,9 +3,7 @@ package tourGuide.repository;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,7 +19,8 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("testFalse")
+@ActiveProfiles("testTrue")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserRepositoryTest {
 
 	@InjectMocks
@@ -58,7 +57,7 @@ class UserRepositoryTest {
 		Map<String, User> usersFound = userRepository.getAllUsers();
 
 		// THEN
-		assertEquals(2, usersFound.size());
+		assertEquals(102, usersFound.size());
 	}
 
 	@Test
@@ -134,6 +133,7 @@ class UserRepositoryTest {
 	}
 
 	@Test
+	@Order(1)
 	void getAllCurrentLocations_Ok_Test() {
 
 		// GIVEN
@@ -141,7 +141,7 @@ class UserRepositoryTest {
 		Map<UUID, Location> currentLocationsFound = userRepository.getAllCurrentLocations();
 
 		// THEN
-		assertEquals(2, currentLocationsFound.size());
+		assertEquals(102, currentLocationsFound.size());
 	}
 
 	@Test
